@@ -68,12 +68,20 @@
     margin: 0 auto;
     padding: 60px 24px 80px;
   }
+  @media (max-width: 480px) {
+    main {
+      padding: 40px 16px 60px;
+    }
+  }
 
   /* === Header === */
   .header {
     text-align: center;
     margin-bottom: 50px;
     animation: fade-in 1.2s ease-out;
+  }
+  @media (max-width: 480px) {
+    .header { margin-bottom: 32px; }
   }
   .header .crest {
     font-family: "Cinzel", serif;
@@ -152,8 +160,8 @@
   }
   .date-inputs {
     display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
     margin-bottom: 24px;
     max-width: 420px;
     margin-left: auto;
@@ -161,23 +169,39 @@
   }
   .field label {
     display: block;
-    font-size: 11px;
-    letter-spacing: 3px;
+    font-size: 10px;
+    letter-spacing: 2px;
     color: var(--text-dim);
     margin-bottom: 6px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
   }
   .field input {
     width: 100%;
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(212, 168, 87, 0.3);
     border-radius: 2px;
-    padding: 14px 8px;
+    padding: 14px 4px;
     color: var(--text);
     font-family: "Cinzel", "Noto Serif TC", serif;
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
     transition: all 0.3s;
+    min-width: 0;
+  }
+  @media (max-width: 480px) {
+    .date-inputs {
+      gap: 8px;
+    }
+    .field label {
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+    .field input {
+      font-size: 16px;
+      padding: 12px 4px;
+    }
   }
   .field input:focus {
     outline: none;
@@ -218,7 +242,7 @@
   .deck-section {
     display: none;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     animation: deck-in 1s ease-out;
   }
   .deck-section.show { display: block; }
@@ -228,54 +252,53 @@
   }
 
   .deck-prompt {
-    margin-bottom: 40px;
+    margin-bottom: 16px;
     transition: opacity 0.5s ease;
   }
   .deck-prompt.fade { opacity: 0; }
   .deck-prompt .line {
     font-family: "Shippori Mincho", serif;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--gold-light);
-    letter-spacing: 6px;
-    line-height: 2;
+    letter-spacing: 4px;
+    line-height: 1.9;
   }
   .deck-prompt .hint {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-dim);
     letter-spacing: 2px;
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
+  /* 牌堆容器：寬度撐滿但有左右安全邊距，高度自適應 */
   .deck-fan {
     position: relative;
-    height: 420px;
+    width: 100%;
+    margin: 0 auto;
+    height: clamp(260px, 42vh, 360px);
     display: flex;
     justify-content: center;
     align-items: flex-end;
     perspective: 1500px;
-    padding-bottom: 20px;
-  }
-  @media (max-width: 680px) {
-    .deck-fan { height: 320px; }
+    padding: 20px 12px;
+    overflow: hidden; /* 防止扇形展開時超出螢幕 */
   }
 
+  /* 卡片大小：響應式，桌機最大 95px，手機更小 */
   .deck-card {
     position: absolute;
-    width: 130px;
+    width: clamp(60px, 14vw, 95px);
     aspect-ratio: 172 / 384;
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
     background: #2a1438;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    transform-origin: center 95%; /* 旋轉軸放在卡片底部，扇形展開才會自然 */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    transform-origin: center 95%;
     transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1),
                 box-shadow 0.4s ease,
                 opacity 0.5s ease;
     bottom: 20px;
-  }
-  @media (max-width: 680px) {
-    .deck-card { width: 100px; }
   }
   .deck-card img {
     width: 100%;
@@ -297,16 +320,16 @@
     box-shadow: 0 20px 50px rgba(212, 168, 87, 0.35);
   }
 
-  /* 階段 2：洗牌動畫 */
+  /* 階段 2：洗牌動畫（更平緩、振幅更小、時間更長）*/
   .deck-card.shuffling {
-    animation: shuffle-card 1.5s ease-in-out;
+    animation: shuffle-card 2.8s ease-in-out;
   }
   @keyframes shuffle-card {
     0%   { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
-    20%  { transform: translateX(calc(var(--stack-x, 0px) - 60px)) translateY(-30px) rotate(-15deg); }
-    40%  { transform: translateX(calc(var(--stack-x, 0px) + 60px)) translateY(-30px) rotate(15deg); }
-    60%  { transform: translateX(calc(var(--stack-x, 0px) - 40px)) translateY(-20px) rotate(-8deg); }
-    80%  { transform: translateX(calc(var(--stack-x, 0px) + 40px)) translateY(-20px) rotate(8deg); }
+    20%  { transform: translateX(calc(var(--stack-x, 0px) - 4px)) translateY(calc(var(--stack-y, 0px) - 8px)) rotate(-2deg); }
+    40%  { transform: translateX(calc(var(--stack-x, 0px) + 4px)) translateY(calc(var(--stack-y, 0px) - 4px)) rotate(2deg); }
+    60%  { transform: translateX(calc(var(--stack-x, 0px) - 3px)) translateY(calc(var(--stack-y, 0px) - 6px)) rotate(-1.5deg); }
+    80%  { transform: translateX(calc(var(--stack-x, 0px) + 3px)) translateY(calc(var(--stack-y, 0px) - 2px)) rotate(1deg); }
     100% { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
   }
 
@@ -319,20 +342,16 @@
                 opacity 0.5s ease;
   }
   .deck-card.fanned:hover {
-    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 25px)) rotate(var(--fan-rot, 0deg)) scale(1.05);
+    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 20px)) rotate(var(--fan-rot, 0deg)) scale(1.06);
     box-shadow: 0 25px 60px rgba(212, 168, 87, 0.45);
     z-index: 100;
   }
 
-  /* 共通：淡出與飛行 */
+  /* 共通：淡出 */
   .deck-card.fading {
     opacity: 0;
     pointer-events: none;
-  }
-  .deck-card.flying {
-    pointer-events: none;
-    z-index: 200;
-    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.9) !important;
   }
 
   /* === 結果區 === */
@@ -714,43 +733,48 @@
     });
 
   // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 扇形展開 → 抽牌）==========
-  const DECK_SIZE = 17;         // 桌機展開幾張牌
-  const DECK_SIZE_MOBILE = 11;  // 手機展開幾張牌
-  const STACK_VISIBLE = 6;      // 一開始牌堆露出幾張的厚度感
+  const DECK_SIZE = 25;         // 桌機展開的扇形張數（多張覆蓋形成豐富視覺）
+  const DECK_SIZE_MOBILE = 19;  // 手機展開的扇形張數
+  const STACK_EXTRA = 8;        // 牌堆底下覆蓋的張數（增加厚度感）
+  const STACK_VISIBLE = 6;      // 堆疊狀態時露出邊緣的張數
 
   function isMobile() {
     return window.innerWidth <= 680;
   }
 
-  // 計算扇形展開時的座標（X 位移、Y 位移、旋轉角度）
+  // 計算扇形展開時的座標（根據容器實際寬度動態算，不會超出畫面）
   function getFanLayout(count) {
+    const fan = document.getElementById("deckFan");
+    const containerWidth = fan ? fan.clientWidth : window.innerWidth - 48;
+    // 卡片實際寬度：跟著 CSS clamp(60px, 14vw, 95px) 同步計算
+    const cardWidth = Math.max(60, Math.min(95, window.innerWidth * 0.14));
+
+    // 扇形左右安全留白：兩端卡片不可超出容器
+    // availableWidth = 容器 - 卡片自身 - 兩側額外 buffer
+    const sideBuffer = isMobile() ? 8 : 16;
+    const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
+    const maxX = Math.max(50, availableWidth / 2);
+    const maxRot = isMobile() ? 28 : 32;
+    const arcDepth = isMobile() ? 22 : 30;
+
     const layout = [];
-    const mobile = isMobile();
-    // 扇形總跨度（兩端 X 距離 + 旋轉角度）
-    const maxX = mobile ? 140 : 240;
-    const maxRot = mobile ? 28 : 32;
-    const arcDepth = mobile ? 25 : 35;
-    // 中心點 idx，左右對稱
     const center = (count - 1) / 2;
     for (let i = 0; i < count; i++) {
       const t = (i - center) / center; // -1 ~ 1
       const x = t * maxX;
       const rot = t * maxRot;
-      // 扇形弧度：兩端高、中間低（y 越小越往下）
       const y = Math.abs(t) * arcDepth;
       layout.push({ x, y, rot });
     }
     return layout;
   }
 
-  // 牌堆模式的位置：模擬「整副疊在一起」，但讓底下幾張稍微露出
+  // 牌堆模式：所有牌疊在中央，最上面幾張錯位露出邊緣製造厚度
   function getStackLayout(count) {
     const layout = [];
     for (let i = 0; i < count; i++) {
-      // 大部分牌都堆在同一個位置，只有最上面幾張錯位露出邊緣
       const isTop = i >= count - STACK_VISIBLE;
       if (isTop) {
-        // 最上面 6 張錯位
         const off = (i - (count - STACK_VISIBLE)) * 1.5;
         layout.push({ x: off, y: -off, rot: 0 });
       } else {
@@ -763,26 +787,47 @@
   function buildDeck() {
     const fan = document.getElementById("deckFan");
     fan.innerHTML = "";
-    const count = isMobile() ? DECK_SIZE_MOBILE : DECK_SIZE;
+    const fanCount = isMobile() ? DECK_SIZE_MOBILE : DECK_SIZE;
+    const totalCount = fanCount + STACK_EXTRA; // 額外 10 張當厚度
 
-    const stackLayout = getStackLayout(count);
-    const fanLayout = getFanLayout(count);
+    const fanLayout = getFanLayout(fanCount);
 
-    for (let i = 0; i < count; i++) {
+    // 先建立 STACK_EXTRA 張「底層厚度牌」——它們疊在最底下，洗牌後會淡出（不參與扇形）
+    for (let i = 0; i < STACK_EXTRA; i++) {
+      const card = document.createElement("div");
+      card.className = "deck-card stacked extra-layer";
+      card.dataset.idx = "extra-" + i;
+      // 底層牌錯位排列（在中央位置稍微偏移）
+      const off = (i - STACK_EXTRA / 2) * 1.2;
+      card.style.setProperty("--stack-x", off + "px");
+      card.style.setProperty("--stack-y", (-off * 0.5) + "px");
+      card.style.setProperty("--stack-rot", "0deg");
+
+      const img = document.createElement("img");
+      img.src = "_img/card_back.jpg";
+      img.alt = "牌背";
+      card.appendChild(img);
+
+      fan.appendChild(card);
+    }
+
+    // 再建立會參與扇形展開的牌
+    const fanStackLayout = getStackLayout(fanCount);
+    for (let i = 0; i < fanCount; i++) {
       const card = document.createElement("div");
       card.className = "deck-card stacked";
       card.dataset.idx = i;
 
-      // 設定 CSS 變數：牌堆位置、扇形位置
-      card.style.setProperty("--stack-x", stackLayout[i].x + "px");
-      card.style.setProperty("--stack-y", stackLayout[i].y + "px");
-      card.style.setProperty("--stack-rot", stackLayout[i].rot + "deg");
+      // CSS 變數：牌堆位置、扇形位置
+      card.style.setProperty("--stack-x", fanStackLayout[i].x + "px");
+      card.style.setProperty("--stack-y", fanStackLayout[i].y + "px");
+      card.style.setProperty("--stack-rot", fanStackLayout[i].rot + "deg");
       card.style.setProperty("--fan-x", fanLayout[i].x + "px");
       card.style.setProperty("--fan-y", fanLayout[i].y + "px");
       card.style.setProperty("--fan-rot", fanLayout[i].rot + "deg");
 
       // 只有最上面那張可以點（觸發洗牌）
-      if (i === count - 1) {
+      if (i === fanCount - 1) {
         card.classList.add("top");
       }
 
@@ -827,41 +872,38 @@
     const cards = document.querySelectorAll(".deck-card");
     cards.forEach((card, i) => {
       card.classList.remove("top");
-      // 每張稍微錯開時間，看起來更自然
-      card.style.animationDelay = (i * 0.03) + "s";
+      // 每張稍微錯開時間（牌數多，delay 要小一點）
+      card.style.animationDelay = (i * 0.015) + "s";
       card.classList.add("shuffling");
     });
 
-    // 洗牌動畫結束後展開
+    // 洗牌動畫結束後展開（動畫 2.8s + 最後一張 delay）
     setTimeout(() => {
       cards.forEach(c => {
         c.classList.remove("shuffling");
         c.style.animationDelay = "";
       });
       fanOpen();
-    }, 1700);
+    }, 2900);
   }
 
   function fanOpen() {
     deckPhase = "fanned";
 
-    // 提示繼續保持淡出（不切換文字，讓畫面專注在卡牌本身）
-    // 從洗牌階段繼承來的 .fade 狀態會一直維持到結果頁
-
     // 切換成扇形展開
     const cards = document.querySelectorAll(".deck-card");
     cards.forEach((card, i) => {
-      // 每張稍微延遲，連續展開
+      // 每張稍微延遲，連續展開（牌數多 delay 要小）
       setTimeout(() => {
         card.classList.remove("stacked");
         card.classList.add("fanned");
-      }, i * 40);
+      }, i * 25);
     });
 
     // 全部展開完才允許點選
     setTimeout(() => {
       isAnimating = false;
-    }, cards.length * 40 + 800);
+    }, cards.length * 25 + 800);
   }
 
   function pickCard(cardEl) {
@@ -872,14 +914,6 @@
     const fan = document.getElementById("deckFan");
     const allCards = fan.querySelectorAll(".deck-card");
 
-    // 取得卡片在畫面上的位置
-    const cardRect = cardEl.getBoundingClientRect();
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportTopArea = 200;
-
-    const dx = viewportCenterX - (cardRect.left + cardRect.width / 2);
-    const dy = viewportTopArea - (cardRect.top + cardRect.height / 2);
-
     // 其他牌淡出
     allCards.forEach(c => {
       if (c !== cardEl) {
@@ -887,16 +921,17 @@
       }
     });
 
-    // 被選的牌飛到中央 + 放大 + 轉正
-    cardEl.classList.remove("fanned");
-    cardEl.classList.add("flying");
-    cardEl.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(1.5)`;
+    // 選中的牌原地稍微放大、發光，當作「被選中」的視覺反饋
+    // 取現在的 transform (扇形位置)，加上 scale 放大
+    cardEl.style.transition = "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s ease";
+    cardEl.style.transform = `translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 30px)) rotate(var(--fan-rot, 0deg)) scale(1.15)`;
+    cardEl.style.boxShadow = "0 30px 80px rgba(212, 168, 87, 0.6), 0 0 60px rgba(244, 184, 200, 0.3)";
 
-    // 飛行動畫完，淡出整個牌堆區、進入結果區
+    // 短暫停留讓使用者感覺「選到了」，然後淡出整個牌堆區，進入結果區
     setTimeout(() => {
       document.getElementById("deckSection").classList.remove("show");
       revealResult(pendingResult);
-    }, 1100);
+    }, 900);
   }
 
   // ========== 主流程 ==========
@@ -939,10 +974,16 @@
     isAnimating = false;
     deckPhase = "stacked";
 
-    // 重置提示文字
+    // 重置提示文字 + 確保 prompt 不在淡出狀態（上次抽完留下的）
     document.getElementById("deckPromptLine1").textContent = "在心中默念你的提問";
     document.getElementById("deckPromptLine2").textContent = "點擊牌堆開始洗牌";
     document.getElementById("deckPromptHint").textContent = "TAP THE DECK TO SHUFFLE";
+    document.getElementById("deckPrompt").classList.remove("fade");
+
+    // 重置結果區的翻牌狀態（避免上次的殘留）
+    const flipper = document.getElementById("cardFlipper");
+    flipper.classList.remove("flipped", "reversed");
+    document.getElementById("cardInfo").classList.remove("show");
 
     buildDeck();
     document.getElementById("deckSection").classList.add("show");
@@ -1040,6 +1081,12 @@
     pendingResult = null;
     isAnimating = false;
     deckPhase = "stacked";
+    // 還原 prompt 狀態
+    document.getElementById("deckPrompt").classList.remove("fade");
+    // 還原結果區翻牌狀態
+    const flipper = document.getElementById("cardFlipper");
+    flipper.classList.remove("flipped", "reversed");
+    document.getElementById("cardInfo").classList.remove("show");
     document.getElementById("year").focus();
     document.getElementById("formCard").scrollIntoView({
       behavior: "smooth",
