@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>庫洛牌・今日運勢</title>
+<title>庫洛卡牌・今日運勢</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+TC:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
@@ -19,10 +19,9 @@
     --text: #f5e8da;
     --text-dim: #c4a896;
     --magic: #b89dd8;
+    --reverse: #b89dd8;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html, body {
     background: var(--bg-deep);
     color: var(--text);
@@ -30,8 +29,6 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
-  /* 旋轉魔法陣 */
   body::before {
     content: "";
     position: fixed;
@@ -50,8 +47,6 @@
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
-
-  /* 星塵 */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
   .star {
     position: absolute;
@@ -74,7 +69,7 @@
     padding: 60px 24px 80px;
   }
 
-  /* 標題 */
+  /* === Header === */
   .header {
     text-align: center;
     margin-bottom: 50px;
@@ -116,13 +111,12 @@
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
     margin: 24px auto 0;
   }
-
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* 表單卡 */
+  /* === 表單 === */
   .form-card {
     background: rgba(26, 13, 31, 0.6);
     backdrop-filter: blur(8px);
@@ -141,7 +135,6 @@
   }
   .form-card::before { top: 12px; left: 14px; }
   .form-card::after { bottom: 12px; right: 14px; }
-
   .form-card h2 {
     font-family: "Shippori Mincho", serif;
     font-size: 18px;
@@ -157,7 +150,6 @@
     letter-spacing: 2px;
     margin-bottom: 28px;
   }
-
   .date-inputs {
     display: grid;
     grid-template-columns: 1.3fr 1fr 1fr;
@@ -167,7 +159,6 @@
     margin-left: auto;
     margin-right: auto;
   }
-
   .field label {
     display: block;
     font-size: 11px;
@@ -176,7 +167,6 @@
     margin-bottom: 6px;
     text-align: center;
   }
-
   .field input {
     width: 100%;
     background: rgba(0,0,0,0.3);
@@ -195,11 +185,10 @@
     background: rgba(0,0,0,0.5);
     box-shadow: 0 0 20px rgba(212, 168, 87, 0.2);
   }
-
   .submit-btn {
     display: block;
     width: 100%;
-    max-width: 380px;
+    max-width: 420px;
     margin: 0 auto;
     background: linear-gradient(135deg, var(--gold), var(--pink-deep));
     color: var(--bg-deep);
@@ -217,7 +206,6 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(212, 168, 87, 0.3);
   }
-
   .error {
     color: var(--pink);
     font-size: 13px;
@@ -226,19 +214,138 @@
     min-height: 18px;
   }
 
-  /* 結果區 */
+  /* === 牌堆區 === */
+  .deck-section {
+    display: none;
+    text-align: center;
+    margin-bottom: 50px;
+    animation: deck-in 1s ease-out;
+  }
+  .deck-section.show { display: block; }
+  @keyframes deck-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .deck-prompt {
+    margin-bottom: 40px;
+    transition: opacity 0.5s ease;
+  }
+  .deck-prompt.fade { opacity: 0; }
+  .deck-prompt .line {
+    font-family: "Shippori Mincho", serif;
+    font-size: 16px;
+    color: var(--gold-light);
+    letter-spacing: 6px;
+    line-height: 2;
+  }
+  .deck-prompt .hint {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 12px;
+  }
+
+  .deck-fan {
+    position: relative;
+    height: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    perspective: 1500px;
+    padding-bottom: 20px;
+  }
+  @media (max-width: 680px) {
+    .deck-fan { height: 320px; }
+  }
+
+  .deck-card {
+    position: absolute;
+    width: 130px;
+    aspect-ratio: 172 / 384;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #2a1438;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    transform-origin: center 95%; /* 旋轉軸放在卡片底部，扇形展開才會自然 */
+    transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1),
+                box-shadow 0.4s ease,
+                opacity 0.5s ease;
+    bottom: 20px;
+  }
+  @media (max-width: 680px) {
+    .deck-card { width: 100px; }
+  }
+  .deck-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* 階段 1：牌堆狀態（一疊卡牌） */
+  .deck-card.stacked {
+    transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg));
+  }
+  .deck-card.stacked.top {
+    cursor: pointer;
+  }
+  .deck-card.stacked.top:hover {
+    transform: translateX(var(--stack-x, 0px)) translateY(calc(var(--stack-y, 0px) - 12px)) rotate(var(--stack-rot, 0deg)) scale(1.03);
+    box-shadow: 0 20px 50px rgba(212, 168, 87, 0.35);
+  }
+
+  /* 階段 2：洗牌動畫 */
+  .deck-card.shuffling {
+    animation: shuffle-card 1.5s ease-in-out;
+  }
+  @keyframes shuffle-card {
+    0%   { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
+    20%  { transform: translateX(calc(var(--stack-x, 0px) - 60px)) translateY(-30px) rotate(-15deg); }
+    40%  { transform: translateX(calc(var(--stack-x, 0px) + 60px)) translateY(-30px) rotate(15deg); }
+    60%  { transform: translateX(calc(var(--stack-x, 0px) - 40px)) translateY(-20px) rotate(-8deg); }
+    80%  { transform: translateX(calc(var(--stack-x, 0px) + 40px)) translateY(-20px) rotate(8deg); }
+    100% { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
+  }
+
+  /* 階段 3：扇形展開 */
+  .deck-card.fanned {
+    transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
+    cursor: pointer;
+    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1),
+                box-shadow 0.4s ease,
+                opacity 0.5s ease;
+  }
+  .deck-card.fanned:hover {
+    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 25px)) rotate(var(--fan-rot, 0deg)) scale(1.05);
+    box-shadow: 0 25px 60px rgba(212, 168, 87, 0.45);
+    z-index: 100;
+  }
+
+  /* 共通：淡出與飛行 */
+  .deck-card.fading {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .deck-card.flying {
+    pointer-events: none;
+    z-index: 200;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* === 結果區 === */
   .result {
     display: none;
     animation: result-in 1.5s ease-out;
   }
   .result.show { display: block; }
-
   @keyframes result-in {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* 翻牌前的引導文字 */
   .reveal-banner {
     text-align: center;
     margin-bottom: 32px;
@@ -255,15 +362,13 @@
   .reveal-banner .reveal-line::after {
     content: "";
     position: absolute;
-    left: 50%;
-    bottom: 0;
+    left: 50%; bottom: 0;
     transform: translateX(-50%);
-    width: 80px;
-    height: 1px;
+    width: 80px; height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
 
-  /* 牌背 → 翻牌動畫 */
+  /* === 翻牌 === */
   .card-stage {
     perspective: 1500px;
     display: flex;
@@ -272,15 +377,16 @@
   }
   .card-flipper {
     position: relative;
-    width: 200px;
+    width: clamp(180px, 50vw, 220px);
     aspect-ratio: 172 / 384;
     transform-style: preserve-3d;
     transition: transform 1.4s cubic-bezier(0.5, -0.3, 0.3, 1.3);
-    cursor: default;
   }
-  .card-flipper.flipped {
-    transform: rotateY(180deg);
-  }
+  /* 正位翻牌：180° */
+  .card-flipper.flipped { transform: rotateY(180deg); }
+  /* 逆位翻牌：180° + 卡片本身旋轉 180° = rotateY(180) + rotateZ(180) */
+  .card-flipper.flipped.reversed { transform: rotateY(180deg) rotateZ(180deg); }
+
   .card-face {
     position: absolute;
     inset: 0;
@@ -290,48 +396,26 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
   .card-back {
-    background: linear-gradient(135deg, #2a1438 0%, #1a0d1f 50%, #2a1438 100%);
-    border: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    background: #2a1438;
   }
-  .card-back::before {
-    content: "";
-    position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(212, 168, 87, 0.4);
-    border-radius: 4px;
-  }
-  .card-back-symbol {
-    font-family: "Cinzel", serif;
-    color: var(--gold);
-    font-size: 38px;
-    text-align: center;
-    line-height: 1.5;
-    text-shadow: 0 0 20px rgba(212, 168, 87, 0.6);
-    position: relative;
-    z-index: 1;
-  }
-  .card-back-symbol small {
+  .card-back img {
+    width: 100%;
+    height: 100%;
     display: block;
-    font-size: 10px;
-    letter-spacing: 4px;
-    margin-top: 8px;
-    color: var(--gold-light);
+    object-fit: cover;
   }
   .card-front {
     transform: rotateY(180deg);
     background: #fce4ec;
   }
   .card-front img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     display: block;
     object-fit: cover;
   }
 
-  /* 牌面資訊 */
+  /* === 卡片資訊區 === */
   .card-info {
     background: linear-gradient(135deg, rgba(196, 113, 137, 0.08), rgba(212, 168, 87, 0.05));
     border: 1px solid rgba(212, 168, 87, 0.25);
@@ -339,18 +423,34 @@
     border-radius: 6px;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.8s ease 1.2s, transform 0.8s ease 1.2s;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    margin-bottom: 32px;
   }
-  .card-flipper.flipped + .card-info,
   .card-info.show {
     opacity: 1;
     transform: translateY(0);
   }
-
   @media (max-width: 680px) {
     .card-info { padding: 24px; }
   }
-
+  .orientation-tag {
+    display: inline-block;
+    font-family: "Cinzel", serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    padding: 5px 14px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  .orientation-tag.upright {
+    color: var(--gold);
+  }
+  .orientation-tag.reversed {
+    color: var(--reverse);
+    background: rgba(184, 157, 216, 0.08);
+  }
+  .card-info .orientation-wrap { text-align: center; }
   .card-info .card-number {
     font-family: "Cinzel", serif;
     font-size: 11px;
@@ -375,7 +475,6 @@
     margin-bottom: 28px;
     letter-spacing: 4px;
   }
-
   .ornament {
     text-align: center;
     color: var(--gold);
@@ -384,12 +483,8 @@
     margin-bottom: 24px;
     opacity: 0.6;
   }
-
-  .field-block {
-    margin-bottom: 22px;
-  }
+  .field-block { margin-bottom: 22px; }
   .field-block:last-child { margin-bottom: 0; }
-
   .field-block .label {
     font-family: "Cinzel", serif;
     font-size: 10px;
@@ -407,12 +502,17 @@
     background: linear-gradient(90deg, var(--gold), transparent);
     opacity: 0.4;
   }
+  .field-block.reversed .label { color: var(--reverse); }
+  .field-block.reversed .label::after {
+    background: linear-gradient(90deg, var(--reverse), transparent);
+  }
   .field-block .content {
     font-size: 15px;
     line-height: 1.9;
     color: var(--text);
   }
 
+  /* 重置按鈕 */
   .footer-actions {
     margin-top: 30px;
     text-align: center;
@@ -444,752 +544,6 @@
     letter-spacing: 2px;
   }
 </style>
-<script type="application/json" id="cards-data">
-[
-  {
-    "id": "01-Light",
-    "number": 1,
-    "name_zh": "光",
-    "name_en": "THE LIGHT",
-    "name_id": "Light",
-    "symbol": "由自己來主導對未來的展望。",
-    "description": "可魯貝洛斯所支配的第一張庫洛牌，具有強烈光的魔法。",
-    "message": "身為耀眼光輝的存在，你聚集眾多注目焦點於一身。不論做什麼都能順利進行，有著最棒的運氣；不僅拿手的事與才能更能發揮，單戀的人也將有機會來臨。",
-    "caution": "只要竭盡全力，光明的未來便掌握在你手中。不要害怕失敗，先採取行動再說。",
-    "poker": "黑桃五",
-    "image_clow": "_img/01C-Light.GIF",
-    "image_large": "_img/01V-Light.JPG"
-  },
-  {
-    "id": "02-Windy",
-    "number": 2,
-    "name_zh": "風",
-    "name_en": "THE WINDY",
-    "name_id": "Windy",
-    "symbol": "前進、充實、期待的暗示。",
-    "description": "四大元素之一，具有操控風的魔法。",
-    "message": "變化、飛躍的時期。能夠獲得有意義情報的可能性也很大。要比平常多注意狀況，詳加觀察。當看準時機已到時，下定決心也是很重要的。",
-    "caution": "說做就做的行動與一時興起的發言還是收斂保守一點比較好。小心之後後悔莫及。",
-    "poker": "黑桃Ｋ",
-    "image_clow": "_img/02C-Windy.GIF",
-    "image_large": "_img/02V-Windy.JPG"
-  },
-  {
-    "id": "03-Fly",
-    "number": 3,
-    "name_zh": "翔",
-    "name_en": "THE FLY",
-    "name_id": "Fly",
-    "symbol": "挑戰飛躍的機會。",
-    "description": "在魔法杖的末端長出羽翼，具有飛行的魔法。",
-    "message": "人際關係將有進展。運勢也增強，連帶的一切都很順利。推薦你可以參加資格考試或公開徵求作品的展覽。記得行動別畏畏縮縮，要開朗進取。",
-    "caution": "因為順利完成朋友交付的事、工作上的任務，所以在信用和財運上都有大幅拓展。",
-    "poker": "梅花六",
-    "image_clow": "_img/03C-Fly.GIF",
-    "image_large": "_img/03V-Fly.JPG"
-  },
-  {
-    "id": "04-Shadow",
-    "number": 4,
-    "name_zh": "影",
-    "name_en": "THE SHADOW",
-    "name_id": "Shadow",
-    "symbol": "未知的部分，問題的發生與消除。",
-    "description": "具有操控自己以及別人的影子的魔法。",
-    "message": "如影子般一直糾纏不斷的問題，事實上是要傳達某個重要訊息給你。只要正面面對問題，一定能看清楚你該前進的正確方向。",
-    "caution": "如果你一直逃避不拿手，討厭的事，最後只會讓你正面面對影子的轉機逃走喔。",
-    "poker": "方塊十",
-    "image_clow": "_img/04C-Shadow.GIF",
-    "image_large": "_img/04V-Shadow.JPG"
-  },
-  {
-    "id": "05-Watery",
-    "number": 5,
-    "name_zh": "水",
-    "name_en": "THE WATERY",
-    "name_id": "Watery",
-    "symbol": "協調性，打開他人心扉的力量。",
-    "description": "四大元素之一，具有操控水的魔法。",
-    "message": "因為很能適時了解他人的心情，所以你會得到大家的信賴。你待人親切總能讓事情順利進行的這種能力，在工作上也能派得上很大的用場。",
-    "caution": "記得運用你總能潤滑週遭人事的溫柔力量，多多發揮你的領導能力。",
-    "poker": "黑桃Ｊ",
-    "image_clow": "_img/05C-Watery.GIF",
-    "image_large": "_img/05V-Watery.JPG"
-  },
-  {
-    "id": "06-Wood",
-    "number": 6,
-    "name_zh": "樹",
-    "name_en": "THE WOOD",
-    "name_id": "Wood",
-    "symbol": "象徵各自的成長與發展。",
-    "description": "具有操控樹的魔法。",
-    "message": "穩健的成長，或者代表著發展。在人際關係上得到信賴，與朋友締結下深厚的關係。不僅才能與能力得以發揮，並能得到許多讚賞。",
-    "caution": "一切順利時更是不能忘掉初衷。要是得意忘形，好不容易建立起來的成就也終將枉費。",
-    "poker": "方塊Ｋ",
-    "image_clow": "_img/06C-Wood.GIF",
-    "image_large": "_img/06V-Wood.JPG"
-  },
-  {
-    "id": "07-Rain",
-    "number": 7,
-    "name_zh": "雨",
-    "name_en": "THE RAIN",
-    "name_id": "Rain",
-    "symbol": "最後終究會好轉。",
-    "description": "具有降雨的魔法。",
-    "message": "現在所發生的事，就像是及時雨。乍看之下讓你覺得是障礙的事，其實就像是激勵你不斷成長的練習題。不要因此而喪氣失志。",
-    "caution": "或許對你是辛苦的體驗，但這只是短暫的。放輕鬆一點，為自己留下一些享受人生的空間吧。",
-    "poker": "黑桃七",
-    "image_clow": "_img/07C-Rain.GIF",
-    "image_large": "_img/07V-Rain.JPG"
-  },
-  {
-    "id": "08-Jump",
-    "number": 8,
-    "name_zh": "跳",
-    "name_en": "THE JUMP",
-    "name_id": "Jump",
-    "symbol": "實力發揮、最佳狀態。",
-    "description": "在腳上長出小羽翼，具有高度跳躍的魔法。",
-    "message": "能夠盡情發揮出本來的力量，個人的魅力也大幅提昇。因此在公私兩方面都變得很忙碌，時間還是要好好安排，保持充足的睡眠。",
-    "caution": "或許會被要求做大件的工作或實力以上的事，而讓你一時有些混亂。以智慧和經驗來克服吧。",
-    "poker": "梅花八",
-    "image_clow": "_img/08C-Jump.GIF",
-    "image_large": "_img/08V-Jump.JPG"
-  },
-  {
-    "id": "09-Illusion",
-    "number": 9,
-    "name_zh": "幻",
-    "name_en": "THE ILLUSION",
-    "name_id": "Illusion",
-    "symbol": "想要從現實中逃離的慾望。",
-    "description": "具有讓對手想出心中思念的事，並產生幻覺的魔法。",
-    "message": "你的心思一直被緊迫而來的表面上的變化所佔據，有不願面對現實的傾向。即使生活或工作的環境改變，也別忘記每個人都擁有適應力。",
-    "caution": "與其現在追求完美，不如把心情放輕鬆多方嘗試。試著去做做看，說不定比你想像中要簡單很多喔。",
-    "poker": "紅心四",
-    "image_clow": "_img/09C-Illusion.GIF",
-    "image_large": "_img/09V-Illusion.JPG"
-  },
-  {
-    "id": "10-Silent",
-    "number": 10,
-    "name_zh": "靜",
-    "name_en": "THE SILENT",
-    "name_id": "Silent",
-    "symbol": "思慮深遠、充電期。",
-    "description": "具有消去四周聲音的魔法。",
-    "message": "乍看之下雖然不起眼，但你的正直早已被所有的人肯定。你理所當然過著踏實並已完成自己責任的生活，最近或許會有好消息降臨喔。",
-    "caution": "雖然你覺得每天的生活只是日復一日不斷重複，但千萬不要自暴自棄。能夠理解你的人一定就在身邊。",
-    "poker": "紅心八",
-    "image_clow": "_img/10C-Silent.GIF",
-    "image_large": "_img/10V-Silent.JPG"
-  },
-  {
-    "id": "11-Thunder",
-    "number": 11,
-    "name_zh": "雷",
-    "name_en": "THE THUNDER",
-    "name_id": "Thunder",
-    "symbol": "若能不迷失自己，便能有幸運的發展。",
-    "description": "具有操控雷電的魔法。",
-    "message": "正是考驗你能否控制爆發而出的激烈感情的時機。也有可能因為腦海裡不斷浮現出很棒的點子，正好得以展現你個性化的存在感。",
-    "caution": "理性與勇氣相伴的行動能帶來支援者。只求私利私慾的自私任性行為只會為你樹立敵人。",
-    "poker": "黑桃十",
-    "image_clow": "_img/11C-Thunder.GIF",
-    "image_large": "_img/11V-Thunder.JPG"
-  },
-  {
-    "id": "12-Sword",
-    "number": 12,
-    "name_zh": "劍",
-    "name_en": "THE SWORD",
-    "name_id": "Sword",
-    "symbol": "真實的探求、報償，有時是破壞力。",
-    "description": "魔法杖的本身變成劍，威力取決於使用者心的魔法。",
-    "message": "真實與力量的象徵。一切事實都能夠按照你的心意順利進行。尤其是如果你播下的是真實的種子，一定能夠得到最棒的收穫。",
-    "caution": "不過，如果想傷害人，進行邪惡的計劃的話，是絕對無法發揮出它的力量的。",
-    "poker": "方塊Ｑ",
-    "image_clow": "_img/12C-Sword.GIF",
-    "image_large": "_img/12V-Sword.JPG"
-  },
-  {
-    "id": "13-Flower",
-    "number": 13,
-    "name_zh": "花",
-    "name_en": "THE FLOWER",
-    "name_id": "Flower",
-    "symbol": "成果、報酬、目標達成率很高的時期。",
-    "description": "具有製造出各種花卉的魔法。",
-    "message": "至今的努力終於開花結果了，而且絕佳的機會也即將到來！只要能以樂觀進取的心情，帶著自信行動，一切都會往好的方向展開。",
-    "caution": "即使發生小障礙，也不可以輕易就放棄、發怒。記得永遠要帶著笑容前進。",
-    "poker": "方塊四",
-    "image_clow": "_img/13C-Flower.GIF",
-    "image_large": "_img/13V-Flower.JPG"
-  },
-  {
-    "id": "14-Shield",
-    "number": 14,
-    "name_zh": "盾",
-    "name_en": "THE SHIELD",
-    "name_id": "Shield",
-    "symbol": "保護，為了保持調和的防衛手段。",
-    "description": "具有防禦攻擊的魔法。",
-    "message": "即使有危機接近你，但你身邊的所有人會把你保護得固若金湯。尤其如果是為了愛與和平，則有可能得到更為強大的力量。",
-    "caution": "不論何時都不可忘記感謝的心。對於感到困難的朋友，不要遲疑，主動問一聲需不需要你的幫助吧。",
-    "poker": "方塊Ｊ",
-    "image_clow": "_img/14C-Shield.GIF",
-    "image_large": "_img/14V-Shield.JPG"
-  },
-  {
-    "id": "15-Time",
-    "number": 15,
-    "name_zh": "時",
-    "name_en": "THE TIME",
-    "name_id": "Time",
-    "symbol": "各種體驗的磨練、自立。",
-    "description": "具有操控時間的魔法，但只能操控一天。",
-    "message": "你是一邊累積經驗、一邊磨練自己，總是在不斷進步著的存在。盡情享受現在這個瞬間，認真度過每一刻的心情，是很重要的。",
-    "caution": "任何一件事裡都帶有傳達給你的訊息。只要有這樣的自覺意識，掌握時機的技巧也會變得高明。",
-    "poker": "紅心Ｊ",
-    "image_clow": "_img/15C-Time.GIF",
-    "image_large": "_img/15V-Time.JPG"
-  },
-  {
-    "id": "16-Power",
-    "number": 16,
-    "name_zh": "力",
-    "name_en": "THE POWER",
-    "name_id": "Power",
-    "symbol": "願望的實現、擴展。",
-    "description": "具有強大力量的魔法。",
-    "message": "你的探求心將會與每天的努力結合為一，不僅得到盼望的結果，也可能得到很高的地位。在工作、愛情方面，也會越來越充實。",
-    "caution": "只要不驕矜自滿，便能一直保持良好的狀態。在意氣風發時更是需要體貼與謙虛。",
-    "poker": "紅心七",
-    "image_clow": "_img/16C-Power.GIF",
-    "image_large": "_img/16V-Power.JPG"
-  },
-  {
-    "id": "17-Mist",
-    "number": 17,
-    "name_zh": "霧",
-    "name_en": "THE MIST",
-    "name_id": "Mist",
-    "symbol": "判定事態，決定出方向。",
-    "description": "具有霧並有腐蝕性的魔法。",
-    "message": "你被給予了凡事皆可以重新考慮究竟想做什麼的機會。一切的事情之所以會曖昧不清，都源自於你本身優柔寡斷的態度和想法所致。",
-    "caution": "保持冷靜。不要想得太複雜，以誠實的心情重新面對一切，眼前的迷霧終究會變成晴天。",
-    "poker": "黑桃六",
-    "image_clow": "_img/17C-Mist.GIF",
-    "image_large": "_img/17V-Mist.JPG"
-  },
-  {
-    "id": "18-Float",
-    "number": 18,
-    "name_zh": "浮",
-    "name_en": "THE FLOAT",
-    "name_id": "Float",
-    "symbol": "由束縛中解放、自由。",
-    "description": "具有將人或物浮起的魔法，並可高速移動。",
-    "message": "一直不斷踏實努力的人，能從各種壓力中解放出來。並非如此的情況，則可能有麻煩發生。以戀愛為首，在對人關係上要多加留意。",
-    "caution": "金錢上的問題或工作上的決定事項，遵從年長的人的建議，比獨斷決定要好。",
-    "poker": "梅花五",
-    "image_clow": "_img/18C-Float.GIF",
-    "image_large": "_img/18V-Float.JPG"
-  },
-  {
-    "id": "19-Storm",
-    "number": 19,
-    "name_zh": "嵐",
-    "name_en": "THE STORM",
-    "name_id": "Storm",
-    "symbol": "激烈的感情，欲求不滿的消解。",
-    "description": "具有操控暴風雨的魔法。",
-    "message": "一直壓抑著的感情或恐懼一口氣表面化，可能遇到嚴厲的狀況。著想改善狀況，必須割捨消極的一面，你可以對自己的主張再多堅持一點。",
-    "caution": "永遠保持中規中矩，只會讓你的魅力減半。有事想告訴對方，就清清楚楚把你的意思講明白。",
-    "poker": "黑桃九",
-    "image_clow": "_img/19C-Storm.GIF",
-    "image_large": "_img/19V-Storm.JPG"
-  },
-  {
-    "id": "20-Erase",
-    "number": 20,
-    "name_zh": "消",
-    "name_en": "THE ERASE",
-    "name_id": "Erase",
-    "symbol": "運氣的停滯，等一下的警告。",
-    "description": "具有將人或物消失的魔法。",
-    "message": "或許一直所期待的事情無法如預期般進行，或產生預定之外的花費等等。即使計劃失敗也要繼續踏實的努力，等待下一個機會。",
-    "caution": "對於一直很順利的人來說，惡運的時期接近了。只要能夠撐過去，便能加深你個人的信度。",
-    "poker": "梅花三",
-    "image_clow": "_img/20C-Erase.GIF",
-    "image_large": "_img/20V-Erase.JPG"
-  },
-  {
-    "id": "21-Glow",
-    "number": 21,
-    "name_zh": "燈",
-    "name_en": "THE GLOW",
-    "name_id": "Glow",
-    "symbol": "幸運的預兆。",
-    "description": "具有放出微弱光芒的魔法。",
-    "message": "幸運的運勢接近了。迷惑也消失無蹤，該做的事自然會出現在眼前。重點在於事前必須確實做好準備。",
-    "caution": "勤奮做好基礎的學習，投入志工活動能夠提升你的運氣。想要實行計劃則必須先打好堅實的基礎。",
-    "poker": "紅心三",
-    "image_clow": "_img/21C-Glow.GIF",
-    "image_large": "_img/21V-Glow.JPG"
-  },
-  {
-    "id": "22-Move",
-    "number": 22,
-    "name_zh": "移",
-    "name_en": "THE MOVE",
-    "name_id": "Move",
-    "symbol": "注意浮躁的行動與發言。",
-    "description": "具有瞬間移動的魔法，但無法移動生物或大東西。",
-    "message": "這時期的運氣並不差，卻總是沒抓準時機。原因似乎就在於衝口而出的發言和一時興起的行動喔。小心不要成為只會光說不練的人。",
-    "caution": "遵守約定。確實做好聯絡工作。容易被感情所支配，所以不論任何事都要慎重對應。",
-    "poker": "梅花九",
-    "image_clow": "_img/22C-Move.GIF",
-    "image_large": "_img/22V-Move.JPG"
-  },
-  {
-    "id": "23-Fight",
-    "number": 23,
-    "name_zh": "鬥",
-    "name_en": "THE FIGHT",
-    "name_id": "Fight",
-    "symbol": "大轉機的前兆。",
-    "description": "具有格鬥技巧的魔法，威力取決於使用者心。",
-    "message": "你克服萬難，不辭勞苦的率先行動，將能得到許多人的感謝與好感。體力與精神力也十分充足，得以扭轉之前的霉運，反敗為勝。",
-    "caution": "小心別太過得意，以至於犯下無謂的錯誤判斷。綿密詳盡的事前調查也是必要的。前輩的建議能給你幫助。",
-    "poker": "梅花四",
-    "image_clow": "_img/23C-Fight.GIF",
-    "image_large": "_img/23V-Fight.JPG"
-  },
-  {
-    "id": "24-Loop",
-    "number": 24,
-    "name_zh": "輪",
-    "name_en": "THE LOOP",
-    "name_id": "Loop",
-    "symbol": "連結、更上一層樓的機會。",
-    "description": "具有將空間分割結合的魔法。",
-    "message": "擁有一份體貼溫柔的心意，讓你能夠與許多的人、事、物產生美好的聯繫。不僅能與他們締結深厚的友情，還可能得到很大的援助。",
-    "caution": "自以為是的狀態會讓事情一點發展性都沒有，只是兜圈子而已。記得保持開放明朗的心情，是很重要的。",
-    "poker": "方塊七",
-    "image_clow": "_img/24C-Loop.GIF",
-    "image_large": "_img/24V-Loop.JPG"
-  },
-  {
-    "id": "25-Sleep",
-    "number": 25,
-    "name_zh": "眠",
-    "name_en": "THE SLEEP",
-    "name_id": "Sleep",
-    "symbol": "休息、平穩的心境。",
-    "description": "具有將對手睡眠的魔法。",
-    "message": "雖然平凡，但沒有煩惱也沒有爭執，十分安定。以正直誠實的態度度過每一天吧。如果你們是日子過得毫無新意的情侶，輕鬆的郊遊踏青能招來幸運喔。",
-    "caution": "天下沒有白吃的午餐，太美的事情一定有陷阱。既知是險路就不要去嚐試。",
-    "poker": "梅花Ｑ",
-    "image_clow": "_img/25C-Sleep.GIF",
-    "image_large": "_img/25V-Sleep.JPG"
-  },
-  {
-    "id": "26-Song",
-    "number": 26,
-    "name_zh": "歌",
-    "name_en": "THE SONG",
-    "name_id": "Song",
-    "symbol": "歡喜、調和、治療的力量。",
-    "description": "具有模仿他人歌聲的魔法。",
-    "message": "只要學習如何尊重對方的意見，便能夠充分自由表現出自己想要表達給對方的事物。可以和朋友一起訂定新的計劃，或者去旅行。",
-    "caution": "雖然只想要自己一個人變得幸福，卻一直無法順利進行。快樂的事就和大家一起分享吧。",
-    "poker": "紅心九",
-    "image_clow": "_img/26C-Song.GIF",
-    "image_large": "_img/26V-Song.JPG"
-  },
-  {
-    "id": "27-Little",
-    "number": 27,
-    "name_zh": "小",
-    "name_en": "THE LITTLE",
-    "name_id": "Little",
-    "symbol": "雖然小卻也是有意義的蛻變期。",
-    "description": "具有將人或物縮小的魔法。",
-    "message": "一直惦記著的不安的事與障礙終於漸告塵埃落定。只要在現在做得到的範圍裡，一點一滴去做；不論是什麼事，持續的做一定能成功。累積成果是非常重要的。",
-    "caution": "如果懷疑對方或自己的感情，不僅可能失去重要的東西或戀人，也會削弱自己的活力，要注意。",
-    "poker": "紅心五",
-    "image_clow": "_img/27C-Little.GIF",
-    "image_large": "_img/27V-Little.JPG"
-  },
-  {
-    "id": "28-Mirror",
-    "number": 28,
-    "name_zh": "鏡",
-    "name_en": "THE MIRROR",
-    "name_id": "Mirror",
-    "symbol": "深切看清自己的時期。",
-    "description": "具有複製人或物的魔法，但也可以做一般的鏡子。",
-    "message": "自己本身所擁有的長處和短處，可以藉由他人對你的態度中知道。尤其是讓你感覺到討厭的人的缺點，更常常是你本身缺點的反射。",
-    "caution": "謙虛的反省一下自己的缺點吧。如果發現什麼不妥的地方，就立刻改正過來。",
-    "poker": "方塊八",
-    "image_clow": "_img/28C-Mirror.GIF",
-    "image_large": "_img/28V-Mirror.JPG"
-  },
-  {
-    "id": "29-Maze",
-    "number": 29,
-    "name_zh": "迷",
-    "name_en": "THE MAZE",
-    "name_id": "Maze",
-    "symbol": "喪失自信、混亂。",
-    "description": "具有將空間變成巨大迷宮的魔法。",
-    "message": "當無法把事物整理清楚，看不清楚狀況的時候，暫時休息一下吧。想一想，自己是不是太頑固了？是不是考慮到對方的心情？是不是太膽怯了？",
-    "caution": "試著在心中描繪「我想要得到這樣的結果！」的成功藍圖。傾聽他人的忠告也很重要。",
-    "poker": "紅心六",
-    "image_clow": "_img/29C-Maze.GIF",
-    "image_large": "_img/29V-Maze.JPG"
-  },
-  {
-    "id": "30-Return",
-    "number": 30,
-    "name_zh": "戾",
-    "name_en": "THE RETURN",
-    "name_id": "Return",
-    "symbol": "敗者復活，永不放棄。",
-    "description": "具有返轉時間的魔法。",
-    "message": "掛在心上的事，一直放著沒處理的事，就趁這個機會一起解決了吧。被貼上畏首畏尾標籤的人也得以挽回名譽。明快乾脆的作為讓你運氣上升。",
-    "caution": "雖然時間不可能逆轉，卻還是能夠用自己的行動力來改變現狀和未來。",
-    "poker": "梅花十",
-    "image_clow": "_img/30C-Return.GIF",
-    "image_large": "_img/30V-Return.JPG"
-  },
-  {
-    "id": "31-Shot",
-    "number": 31,
-    "name_zh": "擊",
-    "name_en": "THE SHOT",
-    "name_id": "Shot",
-    "symbol": "鎖定目標。",
-    "description": "具有射擊力的魔法。",
-    "message": "如果太貪心每樣都想要，反而會以失敗收場。好好看清楚究竟什麼是必要的？目標又是什麼？因為容易變得有攻擊性，要時時警戒自己前進。",
-    "caution": "即使沒有惡意，還是可能會傷了對方。當你發現的時候，就誠心誠意的說一聲「對不起！」吧。",
-    "poker": "梅花Ｊ",
-    "image_clow": "_img/31C-Shot.GIF",
-    "image_large": "_img/31V-Shot.JPG"
-  },
-  {
-    "id": "32-Sweet",
-    "number": 32,
-    "name_zh": "甘",
-    "name_en": "THE SWEET",
-    "name_id": "Sweet",
-    "symbol": "新戀情、受歡迎、依賴心的表現。",
-    "description": "具有將食物變甜，並將物體變成甜食的魔法。",
-    "message": "你是只要有你在場，就讓人覺得心平氣和的人。若能好好運用你的開朗，在工作上的評價便能大幅提高。在戀愛面上也能暫時保持安定的狀態。",
-    "caution": "重視與同伴間的溝通交流雖是好事，但你卻常有太過依賴的傾向，要注意。",
-    "poker": "紅心十",
-    "image_clow": "_img/32C-Sweet.GIF",
-    "image_large": "_img/32V-Sweet.JPG"
-  },
-  {
-    "id": "33-Dash",
-    "number": 33,
-    "name_zh": "驅",
-    "name_en": "THE DASH",
-    "name_id": "Dash",
-    "symbol": "以瞬間爆發力得到勝利，與自己的戰鬥。",
-    "description": "具有快速移動的魔法，但無法持久。",
-    "message": "目標已在眼前。只剩下與你自己的戰鬥，精神力將受到試鍊。即使有一點辛苦也要咬緊牙根撐到最後。快樂的事就在那兒等著你。",
-    "caution": "現在放棄的話，一切又重回開始的原點。太過迷惑只會讓你難得的好運氣離你遠去，損失慘重。",
-    "poker": "梅花二",
-    "image_clow": "_img/33C-Dash.GIF",
-    "image_large": "_img/33V-Dash.JPG"
-  },
-  {
-    "id": "34-Create",
-    "number": 34,
-    "name_zh": "創",
-    "name_en": "THE CREATE",
-    "name_id": "Create",
-    "symbol": "豐富的感受性感受力的開花結果。",
-    "description": "具有將書中寫的事物實體化的魔法。",
-    "message": "你的想法與感受可以輕鬆暢快的表現出來。平常時要多親近音樂與藝術，因為這兩者能提昇你的創造力。也能讓你想出絕妙的點子。",
-    "caution": "若能不被既有概念限制，按照直覺行動，能夠為你帶來意想不到的發現或邂逅。",
-    "poker": "黑桃二",
-    "image_clow": "_img/34C-Create.GIF",
-    "image_large": "_img/34V-Create.JPG"
-  },
-  {
-    "id": "35-Big",
-    "number": 35,
-    "name_zh": "大",
-    "name_en": "THE BIG",
-    "name_id": "Big",
-    "symbol": "極大的可能性與能力，知識慾的提高。",
-    "description": "具有將人或物放大的魔法。",
-    "message": "知識慾極為旺盛的時期。對於做好的計劃，自己的可塑性，更是加以提昇的好機會。可以期待你一直以為不可能實現的愛情與夢想成真。",
-    "caution": "多多參加社團活動、宴會，可能會得到有關將來的有意義提示或情報。",
-    "poker": "紅心Ａ",
-    "image_clow": "_img/35C-Big.GIF",
-    "image_large": "_img/35V-Big.JPG"
-  },
-  {
-    "id": "36-Change",
-    "number": 36,
-    "name_zh": "替",
-    "name_en": "THE CHANGE",
-    "name_id": "Change",
-    "symbol": "心情的切換、浪費。",
-    "description": "具有同時將兩人的心，身體交換的魔法。",
-    "message": "欠缺集中力。這個時期你覺得羨慕別人，對於事物都抱持著否定的想法。因為心情紊亂，說不定會亂花錢買一堆不必要的東西。",
-    "caution": "以你自己的方式改變心情吧!做運動狠狠地流流汗，換換房間的擺設都是好辦法。",
-    "poker": "梅花Ａ",
-    "image_clow": "_img/36C-Change.GIF",
-    "image_large": "_img/36V-Change.JPG"
-  },
-  {
-    "id": "37-Freeze",
-    "number": 37,
-    "name_zh": "凍",
-    "name_en": "THE FREEZE",
-    "name_id": "Freeze",
-    "symbol": "基礎能力的成型，我行我素也OK。",
-    "description": "具有將人或物結凍的魔法。",
-    "message": "人生也是有季節的。春季般的成長期，積蓄力量的冬季。現在就是相當於冬季的充電期。不要三心兩意，靜下心來專注投入在一件事上吧。",
-    "caution": "即將開始的新事物，可以再稍等一下。該優先做好的是多方調查、鍛鍊，培養基礎能力。",
-    "poker": "梅花七",
-    "image_clow": "_img/37C-Freeze.GIF",
-    "image_large": "_img/37V-Freeze.JPG"
-  },
-  {
-    "id": "38-Firey",
-    "number": 38,
-    "name_zh": "火",
-    "name_en": "THE FIREY",
-    "name_id": "Firey",
-    "symbol": "強烈的信條信念，突破難關。",
-    "description": "四大元素之一，具有操控火的魔法。",
-    "message": "充滿強烈旺盛的生命力，不論遇到何種困難都能克服。即使是已經打算要放棄的事，也能藉助這充沛的能量，而有了實現的可能。",
-    "caution": "必需注意不要自信過度。這麼一來便不會引起週遭的反感與憤怒。",
-    "poker": "黑桃四",
-    "image_clow": "_img/38C-Firey.GIF",
-    "image_large": "_img/38V-Firey.JPG"
-  },
-  {
-    "id": "39-Arrow",
-    "number": 39,
-    "name_zh": "矢",
-    "name_en": "THE ARROW",
-    "name_id": "Arrow",
-    "symbol": "能量的高漲、積極性。",
-    "description": "具有射箭的魔法。",
-    "message": "你擁有面對目標時，能夠勇往直前的能量。比平時的行動再更積極的行動，可讓你在最短的時間內達成目標，且得到想要的東西。",
-    "caution": "定出目標是很重要的。太過貪心，反而容易多生枝節障礙，要小心。",
-    "poker": "方塊Ａ",
-    "image_clow": "_img/39C-Arrow.GIF",
-    "image_large": "_img/39V-Arrow.JPG"
-  },
-  {
-    "id": "40-Snow",
-    "number": 40,
-    "name_zh": "雪",
-    "name_en": "THE SNOW",
-    "name_id": "Snow",
-    "symbol": "嶄新的起點和平、純淨。",
-    "description": "具有降雪的魔法。",
-    "message": "重新振作起來，創造一個新的開始。適合開始學習新才藝的時期。也會遇到很好的指導者，在這個時期裡遇到的人，或許會成為長久的朋友喔。",
-    "caution": "如果一直執著於過去，就到此為止吧。只要改變觀點，便能活躍在新的世界裡。",
-    "poker": "黑桃八",
-    "image_clow": "_img/40C-Snow.GIF",
-    "image_large": "_img/40V-Snow.JPG"
-  },
-  {
-    "id": "41-Bubbles",
-    "number": 41,
-    "name_zh": "泡",
-    "name_en": "THE BUBBLES",
-    "name_id": "Bubbles",
-    "symbol": "感情的淨化，由惡性循環脫離的時機。",
-    "description": "具有製造泡沫，並有洗濯功能的魔法。",
-    "message": "一直存在你心中的問題及煩惱有機會能夠化解的乾乾淨淨。別死要面子，以直率的心情去面對，解決的契機自然就會浮現出來。",
-    "caution": "會出現能夠支持你的人，但絕對不能什麼事情都只想要依賴他。",
-    "poker": "方塊二",
-    "image_clow": "_img/41C-Bubbles.GIF",
-    "image_large": "_img/41V-Bubbles.JPG"
-  },
-  {
-    "id": "42-Wave",
-    "number": 42,
-    "name_zh": "波",
-    "name_en": "THE WAVE",
-    "name_id": "Wave",
-    "symbol": "柔軟的姿態為你帶來好運氣。",
-    "description": "具有震波的魔法。",
-    "message": "雖然上上下下起伏不定，最後還是能夠有所前進。以前常生齟齬的人際關係，只要以大海般開闊的胸懷與對方交往，他一定能成為你商量事情的好對象。",
-    "caution": "可能得到意外的人對你愛的告白。即使你實在不喜歡對方，也不要覺得太洩氣。",
-    "poker": "黑桃Ｑ",
-    "image_clow": "_img/42C-Wave.GIF",
-    "image_large": "_img/42V-Wave.JPG"
-  },
-  {
-    "id": "43-Libra",
-    "number": 43,
-    "name_zh": "秤",
-    "name_en": "THE LIBRA",
-    "name_id": "Libra",
-    "symbol": "對人生、行動、思考的比重調整。",
-    "description": "具有辨別說話真偽的魔法。",
-    "message": "所有事情都要經由冷靜公正的判斷，才可以下最好的決定，或選出最好的東西。而失去平衡的事態，也會逐漸重回最好的狀態。",
-    "caution": "不過，對於過去撒過謊的事情，就不可能得到最好的狀態。但只要好好反省，就能逐漸恢復原狀。",
-    "poker": "方塊五",
-    "image_clow": "_img/43C-Libra.GIF",
-    "image_large": "_img/43V-Libra.JPG"
-  },
-  {
-    "id": "44-Through",
-    "number": 44,
-    "name_zh": "拔",
-    "name_en": "THE THROUGH",
-    "name_id": "Through",
-    "symbol": "沒有預期到的事態的好轉。",
-    "description": "具有穿牆的魔法，穿越的厚度依魔力的大小而定。",
-    "message": "通往成功的關鍵是思想的轉換。只要把生活方式，思考方式做180度的改變。事態好轉，幸運降臨的可能性就很大了。清楚說出YES或NO也是很重要的。",
-    "caution": "即使有強力的對手出現，不要討價還價，堂堂正正與之正面相對。說不定出乎意料之外，他會是你的協力者。",
-    "poker": "梅花Ｋ",
-    "image_clow": "_img/44C-Through.GIF",
-    "image_large": "_img/44V-Through.JPG"
-  },
-  {
-    "id": "45-Voice",
-    "number": 45,
-    "name_zh": "聲",
-    "name_en": "THE VOICE",
-    "name_id": "Voice",
-    "symbol": "想成為朋友，和睦相處的心情。",
-    "description": "具有將聲音盜走的魔法。",
-    "message": "好像對人際關係有些疲憊，但你真正的心情卻是正好相反的，其實你很想要和大家交流往來吧？就從主動與人打招呼「早安！」，「你好！」開始吧。",
-    "caution": "若連打招呼都無法確實做到，不僅交不到朋友就連運氣也會低落。開朗的打招呼是幸運的關鍵。",
-    "poker": "紅心Ｋ",
-    "image_clow": "_img/45C-Voice.GIF",
-    "image_large": "_img/45V-Voice.JPG"
-  },
-  {
-    "id": "46-Lock",
-    "number": 46,
-    "name_zh": "錠",
-    "name_en": "THE LOCK",
-    "name_id": "Lock",
-    "symbol": "智慧、英知。對真實、內心的察覺。",
-    "description": "具有將房間鎖上的魔法。",
-    "message": "你擁有可以打開也可以關閉真實之門的能力。或許能在真實之門內發現你自己的心意，或知道他人的秘密。不過，現在還是把它悄悄放在心上比較好。",
-    "caution": "即使是興高采烈的交談，要是超過限度，小心失去信用。一但失去信用要再重新得回就很難了，要注意。",
-    "poker": "方塊六",
-    "image_clow": "_img/46C-Lock.GIF",
-    "image_large": "_img/46V-Lock.JPG"
-  },
-  {
-    "id": "47-Cloud",
-    "number": 47,
-    "name_zh": "雲",
-    "name_en": "THE CLOUD",
-    "name_id": "Cloud",
-    "symbol": "你的決斷將造成決定性的結果。",
-    "description": "具有操控雲的魔法。",
-    "message": "你必需擁有判斷力。在完全放鬆之後，睜開你的心眼，看清楚狀況再下判斷。只要你的選擇是最好的選擇，便能帶給你心中的平安。",
-    "caution": "你的心決定你的運氣是上升或下降。在開朗的人週圍，不僅人們會自然聚集過來，幸運也會降臨。",
-    "poker": "黑桃Ａ",
-    "image_clow": "_img/47C-Cloud.GIF",
-    "image_large": "_img/47V-Cloud.JPG"
-  },
-  {
-    "id": "48-Dream",
-    "number": 48,
-    "name_zh": "夢",
-    "name_en": "THE DREAM",
-    "name_id": "Dream",
-    "symbol": "了解自己的機會，潛在意識的發展期。",
-    "description": "具有預知夢的魔法。",
-    "message": "你所擁有的第六感非常強烈，能由預感，預知夢得到重要的訊息。也顯示擁有夢想的重要性，暗示你必須重新取回心境上的寬裕。",
-    "caution": "試著打電話，寫信給好一陣子沒有聯絡的朋友吧。這或許將成為有助於你認識自己的一條線索。",
-    "poker": "紅心二",
-    "image_clow": "_img/48C-Dream.GIF",
-    "image_large": "_img/48V-Dream.JPG"
-  },
-  {
-    "id": "49-Sand",
-    "number": 49,
-    "name_zh": "砂",
-    "name_en": "THE SAND",
-    "name_id": "Sand",
-    "symbol": "不要害怕改變，加以挑戰。",
-    "description": "具有操控砂的魔法。",
-    "message": "時間和人的感情都無時無刻不斷在改變著。雖然握不住，卻是一直存在。只要你主動踏出一步，你和朋友或戀人一定能順利重修舊好。",
-    "caution": "非常重視你，覺得你很重要的人，或許只是你一直沒注意到，其實就在近得令你意外的地方呢。",
-    "poker": "方塊九",
-    "image_clow": "_img/49C-Sand.GIF",
-    "image_large": "_img/49V-Sand.JPG"
-  },
-  {
-    "id": "50-Twin",
-    "number": 50,
-    "name_zh": "雙",
-    "name_en": "THE TWIN",
-    "name_id": "Twin",
-    "symbol": "最佳搭擋的出現。",
-    "description": "具有將人或物變成兩個的魔法。",
-    "message": "團體活動比單獨行動幸運。可以以「giveandtake」的方式，大家溝通有無，各自發揮最拿手的本領。豐富的人脈將能成為你的財產。",
-    "caution": "請特別重視「謝謝！」這一美麗的話語。或許能邂逅一個能夠談心的人喔。",
-    "poker": "紅心Ｑ",
-    "image_clow": "_img/50C-Twin.GIF",
-    "image_large": "_img/50V-Twin.JPG"
-  },
-  {
-    "id": "51-Earthy",
-    "number": 51,
-    "name_zh": "地",
-    "name_en": "THE EARTHY",
-    "name_id": "Earthy",
-    "symbol": "生命的發源地，努力與包容性的象徵。",
-    "description": "四大元素之一，具有操控土的魔法。",
-    "message": "現在正是打穩基礎的時候。不論做什麼事，基本都是最重要的，並且也不可忘記要努力。雖然沒有立竿見影的效果，你的努力卻一定能結出豐碩的果實，帶來機會。",
-    "caution": "有時以寬闊的心胸接納一切吧。總是以自我為中心，則永遠無法改變，也難以期盼能有所進展。",
-    "poker": "方塊三",
-    "image_clow": "_img/51C-Earthy.GIF",
-    "image_large": "_img/51V-Earthy.JPG"
-  },
-  {
-    "id": "52-Dark",
-    "number": 52,
-    "name_zh": "闇",
-    "name_en": "THE DARK",
-    "name_id": "Dark",
-    "symbol": "照舊、順著自然的發展前進。",
-    "description": "月所支配的第一張庫洛牌，具有黑暗的魔法。",
-    "message": "由於能量低落，與其現在勉強自己迎合他人，還不如多保留一些可以靜心獨處的時間。即使在忙碌的生活裡，留下一點深呼吸的餘裕，還是很重要的喔。",
-    "caution": "著急反而會有反效果。接受原有的狀況，好好地積蓄踏出下一步的能量吧。",
-    "poker": "黑桃三",
-    "image_clow": "_img/52C-Dark.GIF",
-    "image_large": "_img/52V-Dark.JPG"
-  },
-  {
-    "id": "53-Hope",
-    "number": 53,
-    "name_zh": "愛",
-    "name_en": "THE HOPE",
-    "name_id": "Hope",
-    "symbol": "",
-    "description": "",
-    "message": "",
-    "caution": "",
-    "poker": "",
-    "image_clow": "_img/53C-Hope.GIF",
-    "image_large": "_img/53V-Hope.JPG"
-  }
-]
-</script>
 </head>
 <body>
 
@@ -1198,8 +552,8 @@
 <main>
   <header class="header">
     <div class="crest">✦ Daily Clow Reading ✦</div>
-    <h1>庫洛塔牌・今日運勢</h1>
-    <div class="sub">迎接今日的庫洛訊息</div>
+    <h1>庫洛卡牌・今日運勢</h1>
+    <div class="sub">輸入你的生辰　迎接今日的庫洛訊息</div>
     <div class="today-date" id="todayDate"></div>
     <div class="divider"></div>
   </header>
@@ -1207,18 +561,18 @@
   <!-- 表單 -->
   <section class="form-card" id="formCard">
     <h2>請輸入出生年月日</h2>
-    <p class="hint">來自宇宙獨一無二的訊息</p>
+    <p class="hint">每個生辰　對應宇宙獨一無二的訊息</p>
     <div class="date-inputs">
       <div class="field">
-        <label>YEAR</label>
+        <label>YEAR 年</label>
         <input type="number" id="year" placeholder="1999" min="1900" max="2100" inputmode="numeric" />
       </div>
       <div class="field">
-        <label>MONTH</label>
+        <label>MONTH 月</label>
         <input type="number" id="month" placeholder="04" min="1" max="12" inputmode="numeric" />
       </div>
       <div class="field">
-        <label>DAY</label>
+        <label>DAY 日</label>
         <input type="number" id="day" placeholder="01" min="1" max="31" inputmode="numeric" />
       </div>
     </div>
@@ -1226,26 +580,41 @@
     <div class="error" id="errorMsg"></div>
   </section>
 
-  <!-- 結果 -->
+  <!-- 牌堆區 -->
+  <section class="deck-section" id="deckSection">
+    <div class="deck-prompt" id="deckPrompt">
+      <div class="line" id="deckPromptLine1">在心中默念你的提問</div>
+      <div class="line" id="deckPromptLine2">點擊牌堆開始洗牌</div>
+      <div class="hint" id="deckPromptHint">TAP THE DECK TO SHUFFLE</div>
+    </div>
+    <div class="deck-fan" id="deckFan">
+      <!-- 卡片由 JS 動態產生 -->
+    </div>
+  </section>
+
+  <!-- 結果區 -->
   <section class="result" id="result">
     <div class="reveal-banner">
       <div class="reveal-line">✦　今 日 宇 宙 為 你 揭 示　✦</div>
     </div>
 
+    <!-- 卡片 -->
     <div class="card-stage">
       <div class="card-flipper" id="cardFlipper">
         <div class="card-face card-back">
-          <div class="card-back-symbol">
-            ✦<br/><small>CLOW</small>
-          </div>
+          <img src="_img/card_back.jpg" alt="" />
         </div>
         <div class="card-face card-front">
-          <img id="cardImg" alt="" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 200 320&quot;><rect width=&quot;200&quot; height=&quot;320&quot; fill=&quot;%231a0d1f&quot;/><rect x=&quot;8&quot; y=&quot;8&quot; width=&quot;184&quot; height=&quot;304&quot; fill=&quot;none&quot; stroke=&quot;%23d4a857&quot; stroke-width=&quot;1.5&quot;/><text x=&quot;100&quot; y=&quot;160&quot; text-anchor=&quot;middle&quot; fill=&quot;%23d4a857&quot; font-family=&quot;serif&quot; font-size=&quot;14&quot;>image not found</text><text x=&quot;100&quot; y=&quot;185&quot; text-anchor=&quot;middle&quot; fill=&quot;%23c4a896&quot; font-family=&quot;monospace&quot; font-size=&quot;10&quot;>place _img/ here</text></svg>')" />
+          <img id="cardImg" alt="" />
         </div>
       </div>
     </div>
 
+    <!-- 卡牌詳細 -->
     <div class="card-info" id="cardInfo">
+      <div class="orientation-wrap">
+        <span class="orientation-tag" id="orientationTag"></span>
+      </div>
       <div class="ornament">✦ ✦ ✦</div>
       <div class="card-number" id="cardNumber"></div>
       <div class="card-name-en" id="cardNameEn"></div>
@@ -1256,13 +625,13 @@
         <div class="content" id="cardSymbol"></div>
       </div>
 
-      <div class="field-block">
-        <div class="label">今日訊息　Today's Message</div>
+      <div class="field-block" id="messageBlock">
+        <div class="label" id="messageLabel">今日訊息　Message</div>
         <div class="content" id="cardMessage"></div>
       </div>
 
-      <div class="field-block">
-        <div class="label">需注意　Caution</div>
+      <div class="field-block" id="cautionBlock">
+        <div class="label" id="cautionLabel">需注意　Caution</div>
         <div class="content" id="cardCaution"></div>
       </div>
     </div>
@@ -1272,7 +641,9 @@
     </div>
   </section>
 
-  <footer>每日 0:00 更新</footer>
+  <footer>
+    Clow Cards © CLAMP　・　每日 0:00 更新
+  </footer>
 </main>
 
 <script>
@@ -1290,56 +661,15 @@
 
   // ========== 今天的日期 ==========
   const now = new Date();
+  const todayKey = now.getFullYear() + "-" +
+                   String(now.getMonth() + 1).padStart(2, "0") + "-" +
+                   String(now.getDate()).padStart(2, "0");
   document.getElementById("todayDate").textContent =
     now.getFullYear() + " . " +
     String(now.getMonth() + 1).padStart(2, "0") + " . " +
     String(now.getDate()).padStart(2, "0");
 
-  // ========== 12 星座資料 ==========
-  // start: [月, 日]，end: 對應的結束日
-  const ZODIACS = [
-    { id: "capricorn",   name: "摩羯座", en: "Capricorn",    symbol: "♑", start: [12, 22], end: [1, 19],
-      intro: "土象．踏實穩重的領袖。" },
-    { id: "aquarius",    name: "水瓶座", en: "Aquarius",     symbol: "♒", start: [1, 20],  end: [2, 18],
-      intro: "風象．自由獨立的思想家。" },
-    { id: "pisces",      name: "雙魚座", en: "Pisces",       symbol: "♓", start: [2, 19],  end: [3, 20],
-      intro: "水象．溫柔多情的夢想家。" },
-    { id: "aries",       name: "牡羊座", en: "Aries",        symbol: "♈", start: [3, 21],  end: [4, 19],
-      intro: "火象．熱情勇敢的開創者。" },
-    { id: "taurus",      name: "金牛座", en: "Taurus",       symbol: "♉", start: [4, 20],  end: [5, 20],
-      intro: "土象．溫和堅定的守護者。" },
-    { id: "gemini",      name: "雙子座", en: "Gemini",       symbol: "♊", start: [5, 21],  end: [6, 21],
-      intro: "風象．靈活機敏的溝通者。" },
-    { id: "cancer",      name: "巨蟹座", en: "Cancer",       symbol: "♋", start: [6, 22],  end: [7, 22],
-      intro: "水象．溫暖細膩的守護者。" },
-    { id: "leo",         name: "獅子座", en: "Leo",          symbol: "♌", start: [7, 23],  end: [8, 22],
-      intro: "火象．自信耀眼的王者。" },
-    { id: "virgo",       name: "處女座", en: "Virgo",        symbol: "♍", start: [8, 23],  end: [9, 22],
-      intro: "土象．細緻完美的分析者。" },
-    { id: "libra",       name: "天秤座", en: "Libra",        symbol: "♎", start: [9, 23],  end: [10, 23],
-      intro: "風象．優雅平衡的協調者。" },
-    { id: "scorpio",     name: "天蠍座", en: "Scorpio",      symbol: "♏", start: [10, 24], end: [11, 22],
-      intro: "水象．深邃神秘的洞察者。" },
-    { id: "sagittarius", name: "射手座", en: "Sagittarius",  symbol: "♐", start: [11, 23], end: [12, 21],
-      intro: "火象．自由奔放的探險家。" }
-  ];
-
-  function getZodiac(month, day) {
-    for (const z of ZODIACS) {
-      const [sM, sD] = z.start;
-      const [eM, eD] = z.end;
-      // 跨年（摩羯座）特殊處理
-      if (sM > eM) {
-        if ((month === sM && day >= sD) || (month === eM && day <= eD)) return z;
-      } else {
-        if ((month === sM && day >= sD) || (month === eM && day <= eD)) return z;
-      }
-    }
-    return null;
-  }
-
-  // ========== 抽牌邏輯（個人生日 + 今天日期 = 種子）==========
-  // 字串轉成穩定的數字 hash
+  // ========== Hash ==========
   function hashString(s) {
     let h = 2166136261;
     for (let i = 0; i < s.length; i++) {
@@ -1349,16 +679,17 @@
     return h >>> 0;
   }
 
-  function pickTodayCard(year, month, day, totalCards) {
-    const birthKey = year + "-" +
-                     String(month).padStart(2, "0") + "-" +
-                     String(day).padStart(2, "0");
-    const dateKey = now.getFullYear() + "-" +
-                    String(now.getMonth() + 1).padStart(2, "0") + "-" +
-                    String(now.getDate()).padStart(2, "0");
-    // 個人生日 + 今天日期 → 同一個人一天內固定一張，過了 0 點換新
-    const seed = hashString(birthKey + "::" + dateKey);
-    return (seed % totalCards) + 1;
+  // ========== 抽牌邏輯 ==========
+  function getBirthKey(y, m, d) {
+    return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+  }
+  function pickTodayCard(y, m, d, totalCards) {
+    const seed = getBirthKey(y, m, d) + "::" + todayKey;
+    return (hashString(seed) % totalCards) + 1;
+  }
+  function pickOrientation(y, m, d) {
+    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::orientation";
+    return hashString(seed) % 2; // 0 = upright, 1 = reversed
   }
 
   // ========== 驗證日期 ==========
@@ -1370,25 +701,213 @@
     return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
   }
 
-  // ========== 主流程 ==========
+  // ========== 載入卡片資料 ==========
   let CARDS = [];
+  fetch("cards.json")
+    .then(r => r.json())
+    .then(data => {
+      CARDS = data.filter(c => c.number <= 52);
+    })
+    .catch(err => {
+      document.getElementById("errorMsg").textContent =
+        "卡片資料載入失敗，請確認 cards.json 在同一個資料夾。";
+    });
 
-  try {
-    const _data = JSON.parse(document.getElementById("cards-data").textContent);
-    CARDS = _data.filter(c => c.number <= 52);
-  } catch (err) {
-    document.getElementById("errorMsg").textContent = "卡片資料載入失敗";
+  // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 扇形展開 → 抽牌）==========
+  const DECK_SIZE = 17;         // 桌機展開幾張牌
+  const DECK_SIZE_MOBILE = 11;  // 手機展開幾張牌
+  const STACK_VISIBLE = 6;      // 一開始牌堆露出幾張的厚度感
+
+  function isMobile() {
+    return window.innerWidth <= 680;
   }
 
-  document.getElementById("submitBtn").addEventListener("click", divine);
+  // 計算扇形展開時的座標（X 位移、Y 位移、旋轉角度）
+  function getFanLayout(count) {
+    const layout = [];
+    const mobile = isMobile();
+    // 扇形總跨度（兩端 X 距離 + 旋轉角度）
+    const maxX = mobile ? 140 : 240;
+    const maxRot = mobile ? 28 : 32;
+    const arcDepth = mobile ? 25 : 35;
+    // 中心點 idx，左右對稱
+    const center = (count - 1) / 2;
+    for (let i = 0; i < count; i++) {
+      const t = (i - center) / center; // -1 ~ 1
+      const x = t * maxX;
+      const rot = t * maxRot;
+      // 扇形弧度：兩端高、中間低（y 越小越往下）
+      const y = Math.abs(t) * arcDepth;
+      layout.push({ x, y, rot });
+    }
+    return layout;
+  }
 
+  // 牌堆模式的位置：模擬「整副疊在一起」，但讓底下幾張稍微露出
+  function getStackLayout(count) {
+    const layout = [];
+    for (let i = 0; i < count; i++) {
+      // 大部分牌都堆在同一個位置，只有最上面幾張錯位露出邊緣
+      const isTop = i >= count - STACK_VISIBLE;
+      if (isTop) {
+        // 最上面 6 張錯位
+        const off = (i - (count - STACK_VISIBLE)) * 1.5;
+        layout.push({ x: off, y: -off, rot: 0 });
+      } else {
+        layout.push({ x: 0, y: 0, rot: 0 });
+      }
+    }
+    return layout;
+  }
+
+  function buildDeck() {
+    const fan = document.getElementById("deckFan");
+    fan.innerHTML = "";
+    const count = isMobile() ? DECK_SIZE_MOBILE : DECK_SIZE;
+
+    const stackLayout = getStackLayout(count);
+    const fanLayout = getFanLayout(count);
+
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement("div");
+      card.className = "deck-card stacked";
+      card.dataset.idx = i;
+
+      // 設定 CSS 變數：牌堆位置、扇形位置
+      card.style.setProperty("--stack-x", stackLayout[i].x + "px");
+      card.style.setProperty("--stack-y", stackLayout[i].y + "px");
+      card.style.setProperty("--stack-rot", stackLayout[i].rot + "deg");
+      card.style.setProperty("--fan-x", fanLayout[i].x + "px");
+      card.style.setProperty("--fan-y", fanLayout[i].y + "px");
+      card.style.setProperty("--fan-rot", fanLayout[i].rot + "deg");
+
+      // 只有最上面那張可以點（觸發洗牌）
+      if (i === count - 1) {
+        card.classList.add("top");
+      }
+
+      const img = document.createElement("img");
+      img.src = "_img/card_back.jpg";
+      img.alt = "牌背";
+      card.appendChild(img);
+
+      card.addEventListener("click", () => onCardClick(i, card));
+      fan.appendChild(card);
+    }
+  }
+
+  // 階段追蹤：'stacked' / 'shuffling' / 'fanned' / 'picking'
+  let deckPhase = "stacked";
+  let pendingResult = null;
+  let isAnimating = false;
+
+  function onCardClick(idx, cardEl) {
+    if (isAnimating) return;
+
+    if (deckPhase === "stacked") {
+      // 階段 1 → 2：點牌堆 → 洗牌
+      // 只有最上面那張可以觸發
+      if (!cardEl.classList.contains("top")) return;
+      startShuffle();
+    } else if (deckPhase === "fanned") {
+      // 階段 3：選一張牌
+      pickCard(cardEl);
+    }
+  }
+
+  function startShuffle() {
+    isAnimating = true;
+    deckPhase = "shuffling";
+
+    // 提示淡出（不切換文字，讓畫面專注在洗牌動作上）
+    const prompt = document.getElementById("deckPrompt");
+    prompt.classList.add("fade");
+
+    // 觸發洗牌動畫
+    const cards = document.querySelectorAll(".deck-card");
+    cards.forEach((card, i) => {
+      card.classList.remove("top");
+      // 每張稍微錯開時間，看起來更自然
+      card.style.animationDelay = (i * 0.03) + "s";
+      card.classList.add("shuffling");
+    });
+
+    // 洗牌動畫結束後展開
+    setTimeout(() => {
+      cards.forEach(c => {
+        c.classList.remove("shuffling");
+        c.style.animationDelay = "";
+      });
+      fanOpen();
+    }, 1700);
+  }
+
+  function fanOpen() {
+    deckPhase = "fanned";
+
+    // 提示繼續保持淡出（不切換文字，讓畫面專注在卡牌本身）
+    // 從洗牌階段繼承來的 .fade 狀態會一直維持到結果頁
+
+    // 切換成扇形展開
+    const cards = document.querySelectorAll(".deck-card");
+    cards.forEach((card, i) => {
+      // 每張稍微延遲，連續展開
+      setTimeout(() => {
+        card.classList.remove("stacked");
+        card.classList.add("fanned");
+      }, i * 40);
+    });
+
+    // 全部展開完才允許點選
+    setTimeout(() => {
+      isAnimating = false;
+    }, cards.length * 40 + 800);
+  }
+
+  function pickCard(cardEl) {
+    if (!pendingResult) return;
+    isAnimating = true;
+    deckPhase = "picking";
+
+    const fan = document.getElementById("deckFan");
+    const allCards = fan.querySelectorAll(".deck-card");
+
+    // 取得卡片在畫面上的位置
+    const cardRect = cardEl.getBoundingClientRect();
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportTopArea = 200;
+
+    const dx = viewportCenterX - (cardRect.left + cardRect.width / 2);
+    const dy = viewportTopArea - (cardRect.top + cardRect.height / 2);
+
+    // 其他牌淡出
+    allCards.forEach(c => {
+      if (c !== cardEl) {
+        c.classList.add("fading");
+      }
+    });
+
+    // 被選的牌飛到中央 + 放大 + 轉正
+    cardEl.classList.remove("fanned");
+    cardEl.classList.add("flying");
+    cardEl.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(1.5)`;
+
+    // 飛行動畫完，淡出整個牌堆區、進入結果區
+    setTimeout(() => {
+      document.getElementById("deckSection").classList.remove("show");
+      revealResult(pendingResult);
+    }, 1100);
+  }
+
+  // ========== 主流程 ==========
+  document.getElementById("submitBtn").addEventListener("click", startDivination);
   document.querySelectorAll(".field input").forEach(inp => {
     inp.addEventListener("keydown", e => {
-      if (e.key === "Enter") divine();
+      if (e.key === "Enter") startDivination();
     });
   });
 
-  function divine() {
+  function startDivination() {
     const y = parseInt(document.getElementById("year").value, 10);
     const m = parseInt(document.getElementById("month").value, 10);
     const d = parseInt(document.getElementById("day").value, 10);
@@ -1408,33 +927,85 @@
     }
     err.textContent = "";
 
+    // 抽牌（雖然使用者後面要點選，但結果其實是已經決定的）
     const cardNum = pickTodayCard(y, m, d, CARDS.length);
     const card = CARDS.find(c => c.number === cardNum);
-    if (!card) {
-      err.textContent = "找不到對應卡片";
-      return;
-    }
+    const orientation = pickOrientation(y, m, d); // 0 = upright, 1 = reversed
 
-    showResult(card);
+    pendingResult = { card, orientation };
+
+    // 隱藏表單、顯示牌堆
+    document.getElementById("formCard").style.display = "none";
+    isAnimating = false;
+    deckPhase = "stacked";
+
+    // 重置提示文字
+    document.getElementById("deckPromptLine1").textContent = "在心中默念你的提問";
+    document.getElementById("deckPromptLine2").textContent = "點擊牌堆開始洗牌";
+    document.getElementById("deckPromptHint").textContent = "TAP THE DECK TO SHUFFLE";
+
+    buildDeck();
+    document.getElementById("deckSection").classList.add("show");
+
+    // 滾動到牌堆
+    setTimeout(() => {
+      document.getElementById("deckSection").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 100);
   }
 
-  function showResult(card) {
-    // 預先載入卡片
-    document.getElementById("cardImg").src = card.image_clow;
-    document.getElementById("cardImg").alt = card.name_zh + "牌";
+  function revealResult({ card, orientation }) {
+    const isReversed = orientation === 1;
 
-    // 填牌面資訊（先填好，等翻牌動畫完顯示）
+    // 設定圖片
+    const cardImg = document.getElementById("cardImg");
+    cardImg.alt = card.name_zh + "牌";
+    cardImg.src = card.image_clow;
+
+    // 設定方位標籤
+    const tag = document.getElementById("orientationTag");
+    if (isReversed) {
+      tag.textContent = "REVERSED · 逆位";
+      tag.className = "orientation-tag reversed";
+    } else {
+      tag.textContent = "UPRIGHT · 正位";
+      tag.className = "orientation-tag upright";
+    }
+
+    // 設定卡牌資訊
     document.getElementById("cardNumber").textContent =
       "NO. " + String(card.number).padStart(2, "0");
     document.getElementById("cardNameEn").textContent = card.name_en;
     document.getElementById("cardNameZh").textContent = "「" + card.name_zh + "」牌";
     document.getElementById("cardSymbol").textContent = card.symbol;
-    document.getElementById("cardMessage").textContent = card.message;
-    document.getElementById("cardCaution").textContent = card.caution;
+
+    // 根據正逆位顯示對應文字
+    const messageBlock = document.getElementById("messageBlock");
+    const cautionBlock = document.getElementById("cautionBlock");
+    const messageLabel = document.getElementById("messageLabel");
+    const cautionLabel = document.getElementById("cautionLabel");
+
+    if (isReversed) {
+      document.getElementById("cardMessage").textContent = card.message_reversed || card.message;
+      document.getElementById("cardCaution").textContent = card.caution_reversed || card.caution;
+      messageLabel.textContent = "逆位訊息　Reversed Message";
+      cautionLabel.textContent = "逆位提醒　Reversed Caution";
+      messageBlock.classList.add("reversed");
+      cautionBlock.classList.add("reversed");
+    } else {
+      document.getElementById("cardMessage").textContent = card.message;
+      document.getElementById("cardCaution").textContent = card.caution;
+      messageLabel.textContent = "今日訊息　Message";
+      cautionLabel.textContent = "需注意　Caution";
+      messageBlock.classList.remove("reversed");
+      cautionBlock.classList.remove("reversed");
+    }
 
     // 重置翻牌狀態
     const flipper = document.getElementById("cardFlipper");
-    flipper.classList.remove("flipped");
+    flipper.classList.remove("flipped", "reversed");
     document.getElementById("cardInfo").classList.remove("show");
 
     // 顯示結果區
@@ -1444,26 +1015,45 @@
     // 滾動到結果
     setTimeout(() => {
       result.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    }, 200);
 
-    // 延遲翻牌（讓使用者先看到牌背，營造期待感）
+    // 翻牌動畫
     setTimeout(() => {
       flipper.classList.add("flipped");
-    }, 1200);
+      if (isReversed) flipper.classList.add("reversed");
+    }, 800);
 
-    // 翻牌後再顯示牌面資訊
+    // 卡牌資訊區登場
     setTimeout(() => {
       document.getElementById("cardInfo").classList.add("show");
-    }, 2400);
+    }, 2000);
   }
 
   document.getElementById("rerollBtn").addEventListener("click", () => {
+    // 重置所有狀態
     document.getElementById("result").classList.remove("show");
+    document.getElementById("deckSection").classList.remove("show");
+    document.getElementById("formCard").style.display = "";
     document.getElementById("year").value = "";
     document.getElementById("month").value = "";
     document.getElementById("day").value = "";
+    pendingResult = null;
+    isAnimating = false;
+    deckPhase = "stacked";
     document.getElementById("year").focus();
-    document.getElementById("formCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("formCard").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  // 視窗大小變化時，如果牌堆在「初始堆疊」階段才重建（其他階段不重建避免中斷動畫）
+  window.addEventListener("resize", () => {
+    if (deckPhase === "stacked" &&
+        document.getElementById("deckSection").classList.contains("show") &&
+        !isAnimating) {
+      buildDeck();
+    }
   });
 </script>
 
