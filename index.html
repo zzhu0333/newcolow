@@ -609,8 +609,8 @@
 <main>
   <header class="header">
     <div class="crest">✦ Daily Clow Reading ✦</div>
-    <h1>庫洛卡牌運勢</h1>
-    <div class="sub">迎接庫洛訊息</div>
+    <h1>庫洛卡牌・今日運勢</h1>
+    <div class="sub">迎接今日的庫洛訊息</div>
     <div class="today-date" id="todayDate"></div>
     <div class="divider"></div>
   </header>
@@ -632,7 +632,7 @@
         <input type="number" id="day" placeholder="01" min="1" max="31" inputmode="numeric" />
       </div>
     </div>
-    <button class="submit-btn" id="submitBtn">召 喚 卡 牌</button>
+    <button class="submit-btn" id="submitBtn">召 喚 今 日 之 牌</button>
     <div class="error" id="errorMsg"></div>
   </section>
 
@@ -651,7 +651,7 @@
   <!-- 結果區 -->
   <section class="result" id="result">
     <div class="reveal-banner">
-      <div class="reveal-line">✦　宇 宙 為 你 揭 示　✦</div>
+      <div class="reveal-line">✦　今 日 宇 宙 為 你 揭 示　✦</div>
     </div>
 
     <!-- 卡片 -->
@@ -739,25 +739,14 @@
   function getBirthKey(y, m, d) {
     return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
   }
-  //function pickTodayCard(y, m, d, totalCards) {
-  //  const seed = getBirthKey(y, m, d) + "::" + todayKey;
-  //  return (hashString(seed) % totalCards) + 1;
-  //}
-    function pickMomentCard(totalCards) {
-        // 使用當下的毫秒數作為隨機種子
-        const now = new Date().getTime().toString();
-        const seed = now + "::magic_moment";
-        return (hashString(seed) % totalCards) + 1;
-    }
-  //function pickOrientation(y, m, d) {
-  //  const seed = getBirthKey(y, m, d) + "::" + todayKey + "::orientation";
-  //  return hashString(seed) % 2; // 0 = upright, 1 = reversed
-    //}
-    // 修改後的正逆位邏輯：純隨機
-    function pickOrientation() {
-        // 50% 機率回傳 0 (正位)，50% 機率回傳 1 (逆位)
-        return Math.random() < 0.5 ? 0 : 1;
-    }
+  function pickTodayCard(y, m, d, totalCards) {
+    const seed = getBirthKey(y, m, d) + "::" + todayKey;
+    return (hashString(seed) % totalCards) + 1;
+  }
+  function pickOrientation(y, m, d) {
+    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::orientation";
+    return hashString(seed) % 2; // 0 = upright, 1 = reversed
+  }
 
   // ========== 驗證日期 ==========
   function isValidDate(y, m, d) {
