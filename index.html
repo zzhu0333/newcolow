@@ -148,7 +148,7 @@
     font-size: 18px;
     text-align: center;
     color: var(--gold-light);
-    margin-bottom: 8px;
+    margin-bottom: 28px;
     letter-spacing: 4px;
   }
   .form-card .hint {
@@ -294,7 +294,7 @@
     cursor: pointer;
     background: #2a1438;
     box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    transform-origin: center 95%;
+    transform-origin: center center;
     transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1),
                 box-shadow 0.4s ease,
                 opacity 0.5s ease;
@@ -332,7 +332,7 @@
     100% { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
   }
 
-  /* 階段 3：扇形展開 */
+  /* 階段 3：水平展開 */
   .deck-card.fanned {
     transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
     cursor: pointer;
@@ -341,8 +341,8 @@
                 opacity 0.5s ease;
   }
   .deck-card.fanned:hover {
-    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 10px)) rotate(var(--fan-rot, 0deg)) scale(1.03);
-    box-shadow: 0 15px 35px rgba(212, 168, 87, 0.3);
+    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 14px)) rotate(var(--fan-rot, 0deg)) scale(1.04);
+    box-shadow: 0 18px 40px rgba(212, 168, 87, 0.35);
     z-index: 100;
   }
 
@@ -579,7 +579,6 @@
   <!-- 表單 -->
   <section class="form-card" id="formCard">
     <h2>請輸入出生年月日</h2>
-    <p class="hint">每個生辰　對應宇宙獨一無二的訊息</p>
     <div class="date-inputs">
       <div class="field">
         <label>YEAR</label>
@@ -741,29 +740,25 @@
     return window.innerWidth <= 680;
   }
 
-  // 計算扇形展開時的座標（根據容器實際寬度動態算，不會超出畫面）
+  // 計算水平展開時的座標（每張卡 X 均勻分布、Y 全部同高、不旋轉）
   function getFanLayout(count) {
     const fan = document.getElementById("deckFan");
     const containerWidth = fan ? fan.clientWidth : window.innerWidth - 48;
     // 卡片實際寬度：跟著 CSS clamp(60px, 14vw, 95px) 同步計算
     const cardWidth = Math.max(60, Math.min(95, window.innerWidth * 0.14));
 
-    // 扇形左右安全留白：兩端卡片不可超出容器
-    // availableWidth = 容器 - 卡片自身 - 兩側額外 buffer
+    // 水平展開可用寬度：容器寬度 - 卡片自身 - 兩側 buffer
     const sideBuffer = isMobile() ? 8 : 16;
     const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
-    const maxX = Math.max(50, availableWidth / 2);
-    const maxRot = isMobile() ? 28 : 32;
-    const arcDepth = isMobile() ? 22 : 30;
+    const maxX = Math.max(40, availableWidth / 2);
 
     const layout = [];
     const center = (count - 1) / 2;
     for (let i = 0; i < count; i++) {
       const t = (i - center) / center; // -1 ~ 1
       const x = t * maxX;
-      const rot = t * maxRot;
-      const y = Math.abs(t) * arcDepth;
-      layout.push({ x, y, rot });
+      // 全部水平排列：Y = 0, rotate = 0
+      layout.push({ x: x, y: 0, rot: 0 });
     }
     return layout;
   }
