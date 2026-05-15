@@ -285,10 +285,10 @@
     /* 不設 overflow:hidden,讓滑過抬起的卡片可以露出來 */
   }
 
-  /* 卡片大小:放大讓視覺更明顯(手機 ~72px、桌機 ~120px) */
+  /* 卡片大小:手機 55px(保留 52 張完整庫洛全套,接受較密集的展開)、桌機 120px */
   .deck-card {
     position: absolute;
-    width: clamp(72px, 16vw, 120px);
+    width: clamp(55px, 14vw, 120px);
     aspect-ratio: 172 / 384;
     border-radius: 4px;
     overflow: hidden;
@@ -755,8 +755,8 @@
   function getFanLayout(count) {
     const fan = document.getElementById("deckFan");
     const containerWidth = fan ? fan.clientWidth : window.innerWidth;
-    // 卡片實際寬度：跟著 CSS clamp(72px, 16vw, 120px) 同步計算
-    const cardWidth = Math.max(72, Math.min(120, window.innerWidth * 0.16));
+    // 卡片實際寬度：跟著 CSS clamp(55px, 14vw, 120px) 同步計算
+    const cardWidth = Math.max(55, Math.min(120, window.innerWidth * 0.14));
 
     // 水平展開可用寬度：容器寬度 - 卡片自身 - 兩側 buffer
     // (deck-fan 已經是 100vw,buffer 縮到最小)
