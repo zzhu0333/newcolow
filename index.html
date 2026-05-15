@@ -40,7 +40,6 @@
 
   main { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
 
-  /* Header */
   .header { text-align: center; margin-bottom: 40px; }
   .crest { font-family: "Cinzel", serif; font-size: 11px; letter-spacing: 6px; color: var(--gold); margin-bottom: 15px; }
   .header h1 {
@@ -75,44 +74,57 @@
   .deck-fan {
     position: relative; width: 100%; height: 500px; 
     display: flex; justify-content: center; align-items: center;
-    perspective: 1000px;
   }
   .deck-card {
     position: absolute; 
-    width: clamp(80px, 15vw, 110px); /* 放大 1.5 倍的視覺感 */
+    width: clamp(80px, 15vw, 110px); 
     aspect-ratio: 172 / 384;
     border-radius: 6px; overflow: hidden;
     box-shadow: -2px 0 10px rgba(0,0,0,0.5);
     background: #2a1438;
     cursor: pointer;
-    /* 關鍵：初始 transform 必須明確 */
-    transform: translateX(0) translateY(0) scale(1);
-    transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.4s;
+    /* 強制設定過渡效果 */
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s;
+    transform: translate(0, 0) scale(1); /* 預設全部在中心堆疊 */
+    z-index: 1;
   }
   .deck-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
   
   /* 洗牌抖動 */
-  .deck-card.shuffling { animation: shuffle-shake 0.8s ease-in-out infinite; }
+  .deck-card.shuffling {
+    animation: shuffle-shake 0.8s ease-in-out infinite;
+  }
   @keyframes shuffle-shake { 
     0%, 100% { transform: translate(0, 0); } 
-    25% { transform: translate(-10px, 5px); } 
-    75% { transform: translate(10px, -5px); } 
+    25% { transform: translate(-15px, 8px); } 
+    75% { transform: translate(15px, -8px); } 
   }
   
-  /* 展開狀態 */
-  .deck-card.fanned { transform: translateX(var(--fan-x)); }
-  .deck-card.fanned:hover { transform: translateX(var(--fan-x)) translateY(-30px); z-index: 1000 !important; }
+  /* 展開狀態：由 JS 動態設定 --fan-x 位移 */
+  .deck-card.fanned {
+    transform: translateX(var(--fan-x));
+  }
+  .deck-card.fanned:hover {
+    transform: translateX(var(--fan-x)) translateY(-30px);
+    z-index: 100 !important;
+  }
   
   /* 選中與淡出 */
-  .deck-card.picking { z-index: 2000 !important; }
-  .deck-card.fading { opacity: 0; pointer-events: none; }
+  .deck-card.picking {
+    z-index: 500 !important;
+    transform: translateX(var(--fan-x)) translateY(-120px) scale(1.2) !important;
+  }
+  .deck-card.fading {
+    opacity: 0;
+    pointer-events: none;
+  }
 
   /* 3. 結果區 */
   .result { display: none; text-align: center; padding-bottom: 80px; }
   .result.show { display: block; }
   .card-stage { display: flex; justify-content: center; margin: 40px 0; perspective: 1500px; }
   .card-flipper { 
-    width: 220px; /* 結果卡片維持原大小 */
+    width: 220px; 
     aspect-ratio: 172/384; 
     position: relative; transform-style: preserve-3d; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
   }
@@ -182,9 +194,10 @@
   let isAnimating = false;
   const DECK_COUNT = 52;
 
+  // 預載資料
   fetch("cards.json").then(r => r.json()).then(data => { CARDS = data; });
 
-  // 1. 啟動流程
+  // 1. 啟動
   document.getElementById("submitBtn").addEventListener("click", () => {
     const y = document.getElementById("year").value, m = document.getElementById("month").value, d = document.getElementById("day").value;
     if(!y || !m || !d) return alert("請輸入完整生日");
@@ -196,6 +209,7 @@
 
     document.getElementById("formCard").style.display = "none";
     document.getElementById("deckSection").classList.add("show");
+    
     buildDeck();
   });
 
@@ -212,7 +226,8 @@
       const card = document.createElement("div");
       card.className = "deck-card";
       card.style.zIndex = i;
-      // 預設計算 X 位移
+      
+      // 計算位置
       const x = (i * step) - (totalTravel / 2) + (cardWidth / 2);
       card.style.setProperty("--fan-x", x + "px");
 
@@ -220,7 +235,7 @@
       img.src = "_img/card_back.jpg";
       card.appendChild(img);
       
-      card.addEventListener("click", (e) => {
+      card.addEventListener("click", () => {
         if (isAnimating) return;
         if (deckPhase === "stacked") startShuffle();
         else if (deckPhase === "fanned") pickCard(card);
@@ -240,23 +255,30 @@
     cards.forEach(c => c.classList.add("shuffling"));
 
     setTimeout(() => {
-      cards.forEach(c => {
-        c.classList.remove("shuffling");
-        c.classList.add("fanned"); // 這裡觸發 CSS transition 滑開
+      // 停止洗牌並展開
+      cards.forEach(c => c.classList.remove("shuffling"));
+      
+      // 關鍵：使用 requestAnimationFrame 確保瀏覽器捕捉到 transition 的變化
+      requestAnimationFrame(() => {
+        cards.forEach(c => {
+          c.classList.add("fanned");
+        });
       });
-      deckPhase = "fanned";
-      isAnimating = false;
-      prompt.textContent = "請感應並選中一張庫洛牌";
+
+      setTimeout(() => {
+        deckPhase = "fanned";
+        isAnimating = false;
+        prompt.textContent = "請感應並選中一張庫洛牌";
+      }, 800);
     }, 1500);
   }
 
-  // 4. 選牌與結果銜接
+  // 4. 選牌
   function pickCard(cardEl) {
     isAnimating = true;
     cardEl.classList.add("picking");
-    // 直接操作 transform 確保飛出動畫優先
-    cardEl.style.transform = `translateX(${cardEl.style.getPropertyValue("--fan-x")}) translateY(-120px) scale(1.2)`;
     
+    // 淡出其他牌
     document.querySelectorAll(".deck-card").forEach(c => { 
         if(c !== cardEl) c.classList.add("fading"); 
     });
@@ -271,7 +293,7 @@
     }, 1000);
   }
 
-  // 5. 展示結果
+  // 5. 最終結果
   function showFinalResult({ card, orientation }) {
     const isRev = orientation === 1;
     const flipper = document.getElementById("cardFlipper");
