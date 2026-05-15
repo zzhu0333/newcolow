@@ -275,13 +275,13 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    height: clamp(260px, 42vh, 360px);
+    height: clamp(200px, 32vh, 280px);
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     perspective: 1500px;
-    padding: 20px 12px;
-    overflow: hidden; /* 防止扇形展開時超出螢幕 */
+    padding: 12px;
+    overflow: hidden;
   }
 
   /* 卡片大小：響應式，桌機最大 95px，手機更小 */
@@ -298,7 +298,6 @@
     transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1),
                 box-shadow 0.4s ease,
                 opacity 0.5s ease;
-    bottom: 20px;
   }
   .deck-card img {
     width: 100%;
@@ -921,17 +920,17 @@
       }
     });
 
-    // 選中的牌原地稍微放大、發光，當作「被選中」的視覺反饋
-    // 取現在的 transform (扇形位置)，加上 scale 放大
-    cardEl.style.transition = "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s ease";
-    cardEl.style.transform = `translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 30px)) rotate(var(--fan-rot, 0deg)) scale(1.15)`;
-    cardEl.style.boxShadow = "0 30px 80px rgba(212, 168, 87, 0.6), 0 0 60px rgba(244, 184, 200, 0.3)";
+    // 選中的牌「稍微抬起、輕微發亮」——看起來像被使用者拿起，不是被推到面前
+    cardEl.style.transition = "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease";
+    cardEl.style.transform = `translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 18px)) rotate(var(--fan-rot, 0deg)) scale(1.06)`;
+    cardEl.style.boxShadow = "0 20px 40px rgba(212, 168, 87, 0.4)";
+    cardEl.style.zIndex = "200";
 
-    // 短暫停留讓使用者感覺「選到了」，然後淡出整個牌堆區，進入結果區
+    // 短暫停留後，淡出整個牌堆區，進入結果區
     setTimeout(() => {
       document.getElementById("deckSection").classList.remove("show");
       revealResult(pendingResult);
-    }, 900);
+    }, 800);
   }
 
   // ========== 主流程 ==========
