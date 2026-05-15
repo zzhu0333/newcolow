@@ -270,12 +270,12 @@
     margin-top: 8px;
   }
 
-  /* 牌堆容器：寬度撐滿但有左右安全邊距，高度自適應 */
+  /* 牌堆容器：寬度撐滿但有左右安全邊距，高度自適應（配合卡片放大 1.5x） */
   .deck-fan {
     position: relative;
     width: 100%;
     margin: 0 auto;
-    height: clamp(200px, 32vh, 280px);
+    height: clamp(300px, 48vh, 420px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -284,10 +284,10 @@
     overflow: hidden;
   }
 
-  /* 卡片大小：響應式，桌機最大 80px，手機更小（因為要塞 52 張） */
+  /* 卡片大小：放大 1.5x（手機 ~68px、桌機 ~120px） */
   .deck-card {
     position: absolute;
-    width: clamp(45px, 10vw, 80px);
+    width: clamp(68px, 15vw, 120px);
     aspect-ratio: 172 / 384;
     border-radius: 4px;
     overflow: hidden;
@@ -741,7 +741,7 @@
 
   // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 水平展開 → 抽牌）==========
   const DECK_SIZE = 52;         // 桌機展開的張數（呼應庫洛牌總數）
-  const DECK_SIZE_MOBILE = 52;  // 手機也展開 52 張（會更密集）
+  const DECK_SIZE_MOBILE = 40;  // 手機展開 40 張（卡片放大後留出更寬鬆的間距）
   const STACK_EXTRA = 6;        // 牌堆底下覆蓋的張數（增加厚度感）
   const STACK_VISIBLE = 6;      // 堆疊狀態時露出邊緣的張數
 
@@ -753,13 +753,25 @@
   function getFanLayout(count) {
     const fan = document.getElementById("deckFan");
     const containerWidth = fan ? fan.clientWidth : window.innerWidth - 48;
-    // 卡片實際寬度：跟著 CSS clamp(45px, 10vw, 80px) 同步計算
-    const cardWidth = Math.max(45, Math.min(80, window.innerWidth * 0.10));
+    // 卡片實際寬度：跟著 CSS clamp(68px, 15vw, 120px) 同步計算（放大 1.5x 後）
+    const cardWidth = Math.max(68, Math.min(120, window.innerWidth * 0.15));
 
-    // 水平展開可用寬度：容器寬度 - 卡片自身 - 兩側 buffer
+    // 卡片之間希望的最小間距（讓展開時不要太密集）
+    // 手機螢幕窄但牌變成 40 張，間距小一點；桌機間距大一點，視覺更鬆
+    const desiredGap = isMobile() ? 9 : 11;
+
+    // 期望總展開寬度 = (count - 1) 個間距 + 卡片本身寬度
+    const desiredTotalWidth = (count - 1) * desiredGap + cardWidth;
+
+    // 容器最大可用寬度（扣掉兩側 buffer，避免邊緣卡片被裁掉）
     const sideBuffer = isMobile() ? 4 : 12;
-    const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
-    const maxX = Math.max(40, availableWidth / 2);
+    const maxTotalWidth = containerWidth - sideBuffer * 2;
+
+    // 取兩者較小：以「想要的寬鬆間距」為目標，但不能超出容器
+    const totalWidth = Math.min(desiredTotalWidth, maxTotalWidth);
+
+    // 對稱展開的左右最大位移
+    const maxX = (totalWidth - cardWidth) / 2;
 
     const layout = [];
     const center = (count - 1) / 2;
