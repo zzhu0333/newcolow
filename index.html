@@ -286,7 +286,7 @@
   }
 
   /* 卡片大小:手機 55px(保留 52 張完整庫洛全套,接受較密集的展開)、桌機 120px */
-  .deck-card {
+/*  .deck-card {
     position: absolute;
     width: clamp(65px, 22vw, 120px);
     aspect-ratio: 172 / 384;
@@ -300,7 +300,22 @@
                 box-shadow 0.4s ease,
                 opacity 0.5s ease;
     will-change: transform;
-  }
+  }*/
+    .deck-card {
+        position: absolute;
+        /* 寬度與 JS 同步 */
+        width: clamp(65px, 18vw, 120px);
+        /* 比例微調為 1:2，讓卡片看起來更厚實一點 */
+        aspect-ratio: 180 / 360;
+        /* 重要：設定為 center center，確保水平位移時是以中心點對齊 */
+        transform-origin: center center;
+        /* ...其餘保持不變 ... */
+    }
+
+        /* 展開狀態的 transition 保持平滑 */
+        .deck-card.fanned {
+            transform: translateX(var(--fan-x, 0px)) translateY(0px) rotate(0deg);
+        }
   .deck-card img {
     width: 100%;
     height: 100%;
@@ -788,6 +803,7 @@
   //  return layout;
     //}
 
+  
     function getFanLayout(count) {
         const fan = document.getElementById("deckFan");
         // 強制使用 window.innerWidth 確保抓到完整視窗寬度
@@ -805,7 +821,7 @@
             const t = (i - center) / center;
             const x = t * maxX;
             // 加上一點點旋轉角度 (rot) 會讓視覺上看起來更寬闊，不那麼死板
-            const rot = t * 10;
+            //const rot = t * 10;
             layout.push({ x: x, y: 0, rot: rot });
         }
         return layout;
