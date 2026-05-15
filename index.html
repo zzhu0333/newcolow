@@ -29,24 +29,8 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-  body::before {
-    content: "";
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 1200px; height: 1200px;
-    background-image: radial-gradient(circle, transparent 38%, rgba(212, 168, 87, 0.04) 38.5%, transparent 39%),
-                      radial-gradient(circle, transparent 48%, rgba(212, 168, 87, 0.06) 48.5%, transparent 49%);
-    border: 1px solid rgba(212, 168, 87, 0.08);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-    animation: rotate 120s linear infinite;
-  }
-  @keyframes rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-  }
+
+  /* === 背景裝飾 === */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
   .star {
     position: absolute;
@@ -55,10 +39,25 @@
     border-radius: 50%;
     opacity: 0;
     animation: twinkle 4s ease-in-out infinite;
+    box-shadow: 0 0 4px var(--gold-light);
   }
   @keyframes twinkle {
     0%, 100% { opacity: 0; transform: scale(0.5); }
     50% { opacity: 0.8; transform: scale(1); }
+  }
+
+  /* 魔法陣光圈 */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px; height: 1200px;
+    background-image: radial-gradient(circle, transparent 38%, rgba(212, 168, 87, 0.04) 38.5%, transparent 39%);
+    border: 1px solid rgba(212, 168, 87, 0.06);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
   }
 
   main {
@@ -66,154 +65,94 @@
     z-index: 10;
     max-width: 900px;
     margin: 0 auto;
-    padding: 60px 24px 80px;
-  }
-  @media (max-width: 480px) {
-    main {
-      padding: 40px 16px 60px;
-    }
+    padding: 40px 24px;
   }
 
   /* === Header === */
-  .header {
-    text-align: center;
-    margin-bottom: 50px;
-    animation: fade-in 1.2s ease-out;
-  }
-  @media (max-width: 480px) {
-    .header { margin-bottom: 32px; }
-  }
+  .header { text-align: center; margin-bottom: 40px; }
   .header .crest {
     font-family: "Cinzel", serif;
     font-size: 11px;
-    letter-spacing: 6px;
+    letter-spacing: 7px;
     color: var(--gold);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
   }
   .header h1 {
-    font-family: "Shippori Mincho", "Noto Serif TC", serif;
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 700;
+    font-family: "Shippori Mincho", serif;
+    font-size: clamp(28px, 6vw, 40px);
     background: linear-gradient(135deg, var(--gold-light), var(--pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.4;
+    letter-spacing: 4px;
     margin-bottom: 12px;
   }
-  .header .sub {
-    color: var(--text-dim);
-    font-size: 14px;
-    letter-spacing: 2px;
-  }
-  .header .today-date {
-    color: var(--gold-light);
-    font-size: 13px;
-    letter-spacing: 4px;
-    margin-top: 14px;
-    font-family: "Cinzel", serif;
-  }
-  .header .divider {
-    width: 60px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 24px auto 0;
-  }
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .header .sub { color: var(--text-dim); font-size: 14px; letter-spacing: 3px; }
 
-  /* === 表單 === */
+  /* === 表單區 === */
   .form-card {
-    background: rgba(26, 13, 31, 0.6);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(212, 168, 87, 0.2);
+    background: rgba(26, 13, 31, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 168, 87, 0.15);
     border-radius: 4px;
-    padding: 40px 32px;
-    margin-bottom: 40px;
-    position: relative;
-    animation: fade-in 1.4s ease-out;
+    padding: 50px 30px;
+    margin: 0 auto 40px;
+    max-width: 520px;
+    text-align: center;
   }
-  .form-card::before, .form-card::after {
-    content: "✦";
-    position: absolute;
-    color: var(--gold);
-    font-size: 12px;
-  }
-  .form-card::before { top: 12px; left: 14px; }
-  .form-card::after { bottom: 12px; right: 14px; }
   .form-card h2 {
     font-family: "Shippori Mincho", serif;
     font-size: 18px;
-    text-align: center;
     color: var(--gold-light);
-    margin-bottom: 28px;
-    letter-spacing: 4px;
-  }
-  .form-card .hint {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 12px;
-    letter-spacing: 2px;
-    margin-bottom: 28px;
+    margin-bottom: 35px;
+    letter-spacing: 5px;
   }
   .date-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 24px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 35px;
+    width: 100%;
   }
+  .field { flex: 0 0 auto; }
   .field label {
     display: block;
     font-size: 10px;
     letter-spacing: 2px;
     color: var(--text-dim);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
   }
   .field input {
-    width: 100%;
+    width: 90px;
     background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(212, 168, 87, 0.3);
-    border-radius: 2px;
-    padding: 14px 4px;
+    border: 1px solid rgba(212, 168, 87, 0.25);
+    padding: 14px 0;
     color: var(--text);
-    font-family: "Cinzel", "Noto Serif TC", serif;
+    font-family: "Cinzel", serif;
     font-size: 18px;
     text-align: center;
-    transition: all 0.3s;
-    min-width: 0;
+    transition: 0.3s;
+    border-radius: 2px;
   }
   @media (max-width: 480px) {
-    .date-inputs {
-      gap: 8px;
-    }
-    .field label {
-      font-size: 9px;
-      letter-spacing: 1px;
-    }
-    .field input {
-      font-size: 16px;
-      padding: 12px 4px;
-    }
+    .field input { width: 80px; font-size: 16px; }
+    .date-inputs { gap: 8px; }
   }
   .field input:focus {
     outline: none;
     border-color: var(--gold);
     background: rgba(0,0,0,0.5);
-    box-shadow: 0 0 20px rgba(212, 168, 87, 0.2);
+    box-shadow: 0 0 15px rgba(212, 168, 87, 0.2);
   }
+
   .submit-btn {
-    display: block;
     width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
+    max-width: 320px;
     background: linear-gradient(135deg, var(--gold), var(--pink-deep));
     color: var(--bg-deep);
     border: none;
@@ -224,361 +163,124 @@
     letter-spacing: 6px;
     cursor: pointer;
     border-radius: 2px;
-    transition: all 0.3s;
+    transition: 0.3s;
   }
-  .submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(212, 168, 87, 0.3);
-  }
-  .error {
-    color: var(--pink);
-    font-size: 13px;
-    text-align: center;
-    margin-top: 12px;
-    min-height: 18px;
-  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(212, 168, 87, 0.3); }
 
   /* === 牌堆區 === */
-  .deck-section {
-    display: none;
-    text-align: center;
-    margin-bottom: 40px;
-    animation: deck-in 1s ease-out;
-  }
+  .deck-section { display: none; text-align: center; margin-bottom: 40px; }
   .deck-section.show { display: block; }
-  @keyframes deck-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
   .deck-prompt {
-    margin-bottom: 16px;
-    transition: opacity 0.5s ease;
-  }
-  .deck-prompt.fade { opacity: 0; }
-  .deck-prompt .line {
+    color: var(--gold-light);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
     font-family: "Shippori Mincho", serif;
     font-size: 15px;
-    color: var(--gold-light);
-    letter-spacing: 4px;
-    line-height: 1.9;
+    transition: opacity 0.5s ease;
+    min-height: 22px;
   }
-  .deck-prompt .hint {
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    margin-top: 8px;
-  }
+  .deck-prompt.fade { opacity: 0.4; }
 
-  /* 牌堆容器：寬度撐滿但有左右安全邊距，高度自適應（配合卡片再放大） */
+  /* 牌堆容器：突破 main 的 padding,佔滿視窗寬度,給卡片更多展開空間 */
   .deck-fan {
     position: relative;
-    width: 100%;
-    margin: 0 auto;
-    height: clamp(340px, 54vh, 480px);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    height: clamp(280px, 42vh, 380px);
     display: flex;
     justify-content: center;
     align-items: center;
     perspective: 1500px;
-    padding: 12px;
-    overflow: hidden;
-  }
-  /* 手機上讓牌堆容器佔滿視窗寬度（突破 main 的左右 padding），給展開更多空間 */
-  @media (max-width: 480px) {
-    .deck-fan {
-      width: 100vw;
-      margin-left: -16px;
-      margin-right: -16px;
-      padding: 12px 4px;
-    }
+    padding: 30px 4px 20px;
+    /* 不設 overflow:hidden,讓抬起的卡片可以露出來 */
   }
 
-  /* 卡片大小：再放大一級（手機 ~80px、桌機 ~140px） */
+  /* 卡片本體 */
   .deck-card {
     position: absolute;
-    width: clamp(80px, 18vw, 140px);
+    width: clamp(72px, 16vw, 120px);
     aspect-ratio: 172 / 384;
     border-radius: 4px;
     overflow: hidden;
-    cursor: pointer;
     background: #2a1438;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-    transform-origin: center center;
-    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1),
-                box-shadow 0.4s ease,
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transform-origin: center bottom;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.3s ease,
                 opacity 0.5s ease;
+    cursor: pointer;
+    will-change: transform;
   }
   .deck-card img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
-    display: block;
     pointer-events: none;
+    display: block;
   }
 
-  /* 階段 1：牌堆狀態（一疊卡牌） */
+  /* 階段 1：堆疊狀態 */
   .deck-card.stacked {
-    transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg));
-  }
-  .deck-card.stacked.top {
-    cursor: pointer;
+    transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px));
   }
   .deck-card.stacked.top:hover {
-    transform: translateX(var(--stack-x, 0px)) translateY(calc(var(--stack-y, 0px) - 12px)) rotate(var(--stack-rot, 0deg)) scale(1.03);
-    box-shadow: 0 20px 50px rgba(212, 168, 87, 0.35);
+    transform: translateX(var(--stack-x, 0px)) translateY(calc(var(--stack-y, 0px) - 10px)) scale(1.03);
+    box-shadow: 0 18px 35px rgba(212, 168, 87, 0.3);
   }
 
-  /* 階段 2：洗牌動畫（更平緩、振幅更小、時間更長）*/
+  /* 階段 2：洗牌動畫 */
   .deck-card.shuffling {
-    animation: shuffle-card 2.8s ease-in-out;
+    animation: shuffle-shake 2.4s ease-in-out;
   }
-  @keyframes shuffle-card {
-    0%   { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
-    20%  { transform: translateX(calc(var(--stack-x, 0px) - 4px)) translateY(calc(var(--stack-y, 0px) - 8px)) rotate(-2deg); }
-    40%  { transform: translateX(calc(var(--stack-x, 0px) + 4px)) translateY(calc(var(--stack-y, 0px) - 4px)) rotate(2deg); }
-    60%  { transform: translateX(calc(var(--stack-x, 0px) - 3px)) translateY(calc(var(--stack-y, 0px) - 6px)) rotate(-1.5deg); }
-    80%  { transform: translateX(calc(var(--stack-x, 0px) + 3px)) translateY(calc(var(--stack-y, 0px) - 2px)) rotate(1deg); }
-    100% { transform: translateX(var(--stack-x, 0px)) translateY(var(--stack-y, 0px)) rotate(var(--stack-rot, 0deg)); }
+  @keyframes shuffle-shake {
+    0%, 100% { transform: translate(var(--stack-x, 0px), var(--stack-y, 0px)) rotate(0deg); }
+    20% { transform: translate(calc(var(--stack-x, 0px) - 4px), calc(var(--stack-y, 0px) - 8px)) rotate(-2deg); }
+    40% { transform: translate(calc(var(--stack-x, 0px) + 4px), calc(var(--stack-y, 0px) - 4px)) rotate(2deg); }
+    60% { transform: translate(calc(var(--stack-x, 0px) - 3px), calc(var(--stack-y, 0px) - 6px)) rotate(-1.5deg); }
+    80% { transform: translate(calc(var(--stack-x, 0px) + 3px), calc(var(--stack-y, 0px) - 2px)) rotate(1deg); }
   }
 
   /* 階段 3：水平展開 */
   .deck-card.fanned {
-    transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
-    cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
-                box-shadow 0.3s ease,
-                opacity 0.5s ease;
+    transform: translateX(var(--fan-x, 0px));
   }
-  /* hover 狀態：用 .hover class 控制（避免 touch 設備殘留問題）*/
+  /* 滑動/hover 抬起 */
   .deck-card.fanned.hover {
-    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 18px)) rotate(var(--fan-rot, 0deg)) scale(1.05);
-    box-shadow: 0 18px 40px rgba(212, 168, 87, 0.4);
-    z-index: 100;
+    transform: translateX(var(--fan-x, 0px)) translateY(-28px) scale(1.12);
+    box-shadow: 0 22px 45px rgba(212, 168, 87, 0.5);
+    z-index: 200;
   }
-  /* 桌機版額外用 :hover 增強體驗（手機不會觸發） */
   @media (hover: hover) {
     .deck-card.fanned:hover {
-      transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 18px)) rotate(var(--fan-rot, 0deg)) scale(1.05);
-      box-shadow: 0 18px 40px rgba(212, 168, 87, 0.4);
-      z-index: 100;
+      transform: translateX(var(--fan-x, 0px)) translateY(-28px) scale(1.12);
+      box-shadow: 0 22px 45px rgba(212, 168, 87, 0.5);
+      z-index: 200;
     }
   }
 
-  /* 共通：淡出 */
+  /* 階段 4：確認抽選 */
+  .deck-card.picked {
+    transform: translateX(var(--fan-x, 0px)) translateY(-65px) scale(1.22) !important;
+    box-shadow: 0 30px 60px rgba(244, 184, 200, 0.6), 0 0 40px rgba(212, 168, 87, 0.5) !important;
+    z-index: 300 !important;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s ease;
+  }
   .deck-card.fading {
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.9) !important;
+    transform: translateX(var(--fan-x, 0px)) scale(0.85) !important;
   }
 
   /* === 結果區 === */
-  .result {
-    display: none;
-    animation: result-in 1.5s ease-out;
-  }
+  .result { display: none; text-align: center; animation: fade-in 1s; }
   .result.show { display: block; }
-  @keyframes result-in {
-    0% { opacity: 0; transform: translateY(30px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal-banner {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .reveal-banner .reveal-line {
-    font-family: "Shippori Mincho", serif;
-    font-size: 15px;
-    color: var(--gold-light);
-    letter-spacing: 8px;
-    padding-bottom: 16px;
-    position: relative;
-    display: inline-block;
-  }
-  .reveal-banner .reveal-line::after {
-    content: "";
-    position: absolute;
-    left: 50%; bottom: 0;
-    transform: translateX(-50%);
-    width: 80px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-
-  /* === 翻牌 === */
-  .card-stage {
-    perspective: 1500px;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 32px;
-  }
-  .card-flipper {
-    position: relative;
-    width: clamp(180px, 50vw, 220px);
-    aspect-ratio: 172 / 384;
-    transform-style: preserve-3d;
-    transition: transform 1.4s cubic-bezier(0.5, -0.3, 0.3, 1.3);
-  }
-  /* 正位翻牌：180° */
+  @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .card-stage { display: flex; justify-content: center; margin: 30px 0; perspective: 1000px; }
+  .card-flipper { width: 200px; aspect-ratio: 172/384; transform-style: preserve-3d; transition: 1.2s; }
   .card-flipper.flipped { transform: rotateY(180deg); }
-  /* 逆位翻牌：180° + 卡片本身旋轉 180° = rotateY(180) + rotateZ(180) */
-  .card-flipper.flipped.reversed { transform: rotateY(180deg) rotateZ(180deg); }
-
-  .card-face {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  .card-back {
-    background: #2a1438;
-  }
-  .card-back img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-  .card-front {
-    transform: rotateY(180deg);
-    background: #fce4ec;
-  }
-  .card-front img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  /* === 卡片資訊區 === */
-  .card-info {
-    background: linear-gradient(135deg, rgba(196, 113, 137, 0.08), rgba(212, 168, 87, 0.05));
-    border: 1px solid rgba(212, 168, 87, 0.25);
-    padding: 36px;
-    border-radius: 6px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-    margin-bottom: 32px;
-  }
-  .card-info.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (max-width: 680px) {
-    .card-info { padding: 24px; }
-  }
-  .orientation-tag {
-    display: inline-block;
-    font-family: "Cinzel", serif;
-    font-size: 10px;
-    letter-spacing: 4px;
-    padding: 5px 14px;
-    border: 1px solid currentColor;
-    border-radius: 2px;
-    margin-bottom: 18px;
-  }
-  .orientation-tag.upright {
-    color: var(--gold);
-  }
-  .orientation-tag.reversed {
-    color: var(--reverse);
-    background: rgba(184, 157, 216, 0.08);
-  }
-  .card-info .orientation-wrap { text-align: center; }
-  .card-info .card-number {
-    font-family: "Cinzel", serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .card-info .card-name-en {
-    font-family: "Cinzel", serif;
-    font-size: 26px;
-    letter-spacing: 4px;
-    color: var(--gold-light);
-    text-align: center;
-    margin-bottom: 6px;
-  }
-  .card-info .card-name-zh {
-    font-family: "Shippori Mincho", serif;
-    font-size: 22px;
-    color: var(--pink);
-    text-align: center;
-    margin-bottom: 28px;
-    letter-spacing: 4px;
-  }
-  .ornament {
-    text-align: center;
-    color: var(--gold);
-    font-size: 11px;
-    letter-spacing: 8px;
-    margin-bottom: 24px;
-    opacity: 0.6;
-  }
-  .field-block { margin-bottom: 22px; }
-  .field-block:last-child { margin-bottom: 0; }
-  .field-block .label {
-    font-family: "Cinzel", serif;
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .field-block .label::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    opacity: 0.4;
-  }
-  .field-block.reversed .label { color: var(--reverse); }
-  .field-block.reversed .label::after {
-    background: linear-gradient(90deg, var(--reverse), transparent);
-  }
-  .field-block .content {
-    font-size: 15px;
-    line-height: 1.9;
-    color: var(--text);
-  }
-
-  /* 重置按鈕 */
-  .footer-actions {
-    margin-top: 30px;
-    text-align: center;
-  }
-  .reroll-btn {
-    background: transparent;
-    border: 1px solid var(--text-dim);
-    color: var(--text-dim);
-    padding: 10px 28px;
-    font-family: "Noto Serif TC", serif;
-    font-size: 13px;
-    letter-spacing: 3px;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-  .reroll-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold-light);
-  }
-
-  footer {
-    text-align: center;
-    margin-top: 60px;
-    padding-top: 40px;
-    border-top: 1px solid rgba(212, 168, 87, 0.1);
-    color: var(--text-dim);
-    font-size: 11px;
-    letter-spacing: 2px;
-  }
+  .card-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 6px; overflow: hidden; }
+  .card-front { transform: rotateY(180deg); }
+  .card-face img { width: 100%; height: 100%; object-fit: cover; }
 </style>
 </head>
 <body>
@@ -587,274 +289,114 @@
 
 <main>
   <header class="header">
-    <div class="crest">✦ Daily Clow Reading ✦</div>
+    <div class="crest">✦ DAILY CLOW READING ✦</div>
     <h1>庫洛卡牌・今日運勢</h1>
     <div class="sub">迎接今日的庫洛訊息</div>
-    <div class="today-date" id="todayDate"></div>
-    <div class="divider"></div>
   </header>
 
-  <!-- 表單 -->
   <section class="form-card" id="formCard">
     <h2>請輸入出生年月日</h2>
     <div class="date-inputs">
       <div class="field">
         <label>YEAR</label>
-        <input type="number" id="year" placeholder="1999" min="1900" max="2100" inputmode="numeric" />
+        <input type="number" id="year" placeholder="1999" />
       </div>
       <div class="field">
         <label>MONTH</label>
-        <input type="number" id="month" placeholder="04" min="1" max="12" inputmode="numeric" />
+        <input type="number" id="month" placeholder="04" />
       </div>
       <div class="field">
         <label>DAY</label>
-        <input type="number" id="day" placeholder="01" min="1" max="31" inputmode="numeric" />
+        <input type="number" id="day" placeholder="01" />
       </div>
     </div>
     <button class="submit-btn" id="submitBtn">召 喚 今 日 之 牌</button>
-    <div class="error" id="errorMsg"></div>
   </section>
 
-  <!-- 牌堆區 -->
   <section class="deck-section" id="deckSection">
-    <div class="deck-prompt" id="deckPrompt">
-      <div class="line" id="deckPromptLine1">在心中默念你的提問</div>
-      <div class="line" id="deckPromptLine2">點擊牌堆開始洗牌</div>
-      <div class="hint" id="deckPromptHint">TAP THE DECK TO SHUFFLE</div>
-    </div>
-    <div class="deck-fan" id="deckFan">
-      <!-- 卡片由 JS 動態產生 -->
-    </div>
+    <div class="deck-prompt" id="deckPrompt">點擊牌堆開始洗牌</div>
+    <div class="deck-fan" id="deckFan"></div>
   </section>
 
-  <!-- 結果區 -->
   <section class="result" id="result">
-    <div class="reveal-banner">
-      <div class="reveal-line">✦　今 日 宇 宙 為 你 揭 示　✦</div>
-    </div>
-
-    <!-- 卡片 -->
     <div class="card-stage">
       <div class="card-flipper" id="cardFlipper">
-        <div class="card-face card-back">
-          <img src="_img/card_back.jpg" alt="" />
-        </div>
-        <div class="card-face card-front">
-          <img id="cardImg" alt="" />
-        </div>
+        <div class="card-face card-back"><img src="_img/card_back.jpg" /></div>
+        <div class="card-face card-front"><img id="cardImg" /></div>
       </div>
     </div>
-
-    <!-- 卡牌詳細 -->
-    <div class="card-info" id="cardInfo">
-      <div class="orientation-wrap">
-        <span class="orientation-tag" id="orientationTag"></span>
-      </div>
-      <div class="ornament">✦ ✦ ✦</div>
-      <div class="card-number" id="cardNumber"></div>
-      <div class="card-name-en" id="cardNameEn"></div>
-      <div class="card-name-zh" id="cardNameZh"></div>
-
-      <div class="field-block">
-        <div class="label">象 徵　Symbol</div>
-        <div class="content" id="cardSymbol"></div>
-      </div>
-
-      <div class="field-block" id="messageBlock">
-        <div class="label" id="messageLabel">今日訊息　Message</div>
-        <div class="content" id="cardMessage"></div>
-      </div>
-
-      <div class="field-block" id="cautionBlock">
-        <div class="label" id="cautionLabel">需注意　Caution</div>
-        <div class="content" id="cardCaution"></div>
-      </div>
-    </div>
-
-    <div class="footer-actions">
-      <button class="reroll-btn" id="rerollBtn">重新查詢</button>
-    </div>
+    <h3 id="cardName" style="color: var(--pink); letter-spacing: 4px; font-size: 22px;"></h3>
+    <button onclick="location.reload()" style="margin-top: 40px; background: none; border: 1px solid var(--text-dim); color: var(--text-dim); padding: 10px 30px; cursor: pointer;">重新查詢</button>
   </section>
-
-  <footer>
-    Clow Cards © CLAMP　・　每日 0:00 更新
-  </footer>
 </main>
 
 <script>
-  // ========== 星塵 ==========
-  const starsEl = document.getElementById("stars");
-  for (let i = 0; i < 50; i++) {
+  // === 初始化星空 ===
+  const starsContainer = document.getElementById("stars");
+  for (let i = 0; i < 80; i++) {
     const s = document.createElement("div");
     s.className = "star";
     s.style.left = Math.random() * 100 + "%";
     s.style.top = Math.random() * 100 + "%";
-    s.style.animationDelay = (Math.random() * 4) + "s";
-    s.style.animationDuration = (3 + Math.random() * 4) + "s";
-    starsEl.appendChild(s);
+    s.style.animationDelay = Math.random() * 5 + "s";
+    starsContainer.appendChild(s);
   }
 
-  // ========== 今天的日期 ==========
-  const now = new Date();
-  const todayKey = now.getFullYear() + "-" +
-                   String(now.getMonth() + 1).padStart(2, "0") + "-" +
-                   String(now.getDate()).padStart(2, "0");
-  document.getElementById("todayDate").textContent =
-    now.getFullYear() + " . " +
-    String(now.getMonth() + 1).padStart(2, "0") + " . " +
-    String(now.getDate()).padStart(2, "0");
-
-  // ========== Hash ==========
-  function hashString(s) {
-    let h = 2166136261;
-    for (let i = 0; i < s.length; i++) {
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return h >>> 0;
-  }
-
-  // ========== 抽牌邏輯 ==========
-  function getBirthKey(y, m, d) {
-    return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
-  }
-  function pickTodayCard(y, m, d, totalCards) {
-    const seed = getBirthKey(y, m, d) + "::" + todayKey;
-    return (hashString(seed) % totalCards) + 1;
-  }
-  function pickOrientation(y, m, d) {
-    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::orientation";
-    return hashString(seed) % 2; // 0 = upright, 1 = reversed
-  }
-
-  // ========== 驗證日期 ==========
-  function isValidDate(y, m, d) {
-    if (y < 1900 || y > 2100) return false;
-    if (m < 1 || m > 12) return false;
-    if (d < 1 || d > 31) return false;
-    const dt = new Date(y, m - 1, d);
-    return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
-  }
-
-  // ========== 載入卡片資料 ==========
+  // === 載入卡片資料 ===
   let CARDS = [];
-  fetch("cards.json")
-    .then(r => r.json())
-    .then(data => {
-      CARDS = data.filter(c => c.number <= 52);
-    })
-    .catch(err => {
-      document.getElementById("errorMsg").textContent =
-        "卡片資料載入失敗，請確認 cards.json 在同一個資料夾。";
-    });
+  fetch("cards.json").then(r => r.json()).then(data => { CARDS = data; });
 
-  // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 水平展開 → 抽牌）==========
-  const DECK_SIZE = 28;         // 桌機展開的張數
-  const DECK_SIZE_MOBILE = 30;  // 手機展開 30 張
-  const STACK_EXTRA = 6;        // 牌堆底下覆蓋的張數（增加厚度感）
-  const STACK_VISIBLE = 6;      // 堆疊狀態時露出邊緣的張數
+  // === 狀態 ===
+  const DECK_SIZE = 52;           // 桌機/手機都展開 52 張
+  const STACK_VISIBLE = 6;
+  let deckPhase = "stacked";      // stacked / shuffling / fanned / picking
+  let isAnimating = false;
 
-  function isMobile() {
-    return window.innerWidth <= 680;
-  }
-
-  // 計算水平展開時的座標（每張卡 X 均勻分布、Y 全部同高、不旋轉）
+  // === 計算扇形展開的 X 位置 ===
   function getFanLayout(count) {
     const fan = document.getElementById("deckFan");
-    const containerWidth = fan ? fan.clientWidth : window.innerWidth - 48;
-    // 卡片實際寬度：跟著 CSS clamp(80px, 18vw, 140px) 同步計算
-    const cardWidth = Math.max(80, Math.min(140, window.innerWidth * 0.18));
-
-    // 卡片之間希望的間距（讓展開時接近圖二的鬆度）
-    // 手機：露出比例 ~30%；桌機：露出比例 ~30%
-    const desiredGap = isMobile() ? 18 : 28;
-
-    // 期望總展開寬度 = (count - 1) 個間距 + 卡片本身寬度
-    const desiredTotalWidth = (count - 1) * desiredGap + cardWidth;
-
-    // 容器最大可用寬度（扣掉兩側 buffer，避免邊緣卡片被裁掉）
-    // 手機上 buffer 縮到最小，盡量用滿視窗寬度
-    const sideBuffer = isMobile() ? 2 : 12;
-    const maxTotalWidth = containerWidth - sideBuffer * 2;
-
-    // 取兩者較小：以「想要的寬鬆間距」為目標，但不能超出容器
-    const totalWidth = Math.min(desiredTotalWidth, maxTotalWidth);
-
-    // 對稱展開的左右最大位移
-    const maxX = (totalWidth - cardWidth) / 2;
+    const containerWidth = fan ? fan.clientWidth : window.innerWidth;
+    const cardWidth = Math.max(72, Math.min(120, window.innerWidth * 0.16));
+    const sideBuffer = window.innerWidth <= 480 ? 6 : 16;
+    const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
+    const maxX = availableWidth / 2;
 
     const layout = [];
     const center = (count - 1) / 2;
     for (let i = 0; i < count; i++) {
       const t = (i - center) / center; // -1 ~ 1
-      const x = t * maxX;
-      // 全部水平排列：Y = 0, rotate = 0
-      layout.push({ x: x, y: 0, rot: 0 });
+      layout.push({ x: t * maxX });
     }
     return layout;
   }
 
-  // 牌堆模式：所有牌疊在中央，最上面幾張錯位露出邊緣製造厚度
-  function getStackLayout(count) {
-    const layout = [];
-    for (let i = 0; i < count; i++) {
-      const isTop = i >= count - STACK_VISIBLE;
-      if (isTop) {
-        const off = (i - (count - STACK_VISIBLE)) * 1.5;
-        layout.push({ x: off, y: -off, rot: 0 });
-      } else {
-        layout.push({ x: 0, y: 0, rot: 0 });
-      }
-    }
-    return layout;
-  }
-
+  // === 建立牌堆 ===
   function buildDeck() {
     const fan = document.getElementById("deckFan");
     fan.innerHTML = "";
-    const fanCount = isMobile() ? DECK_SIZE_MOBILE : DECK_SIZE;
-    const totalCount = fanCount + STACK_EXTRA; // 額外 10 張當厚度
+    const fanLayout = getFanLayout(DECK_SIZE);
 
-    const fanLayout = getFanLayout(fanCount);
-
-    // 先建立 STACK_EXTRA 張「底層厚度牌」——它們疊在最底下，洗牌後會淡出（不參與扇形）
-    for (let i = 0; i < STACK_EXTRA; i++) {
-      const card = document.createElement("div");
-      card.className = "deck-card stacked extra-layer";
-      card.dataset.idx = "extra-" + i;
-      // 底層牌錯位排列（在中央位置稍微偏移）
-      const off = (i - STACK_EXTRA / 2) * 1.2;
-      card.style.setProperty("--stack-x", off + "px");
-      card.style.setProperty("--stack-y", (-off * 0.5) + "px");
-      card.style.setProperty("--stack-rot", "0deg");
-
-      const img = document.createElement("img");
-      img.src = "_img/card_back.jpg";
-      img.alt = "牌背";
-      card.appendChild(img);
-
-      fan.appendChild(card);
-    }
-
-    // 再建立會參與扇形展開的牌
-    const fanStackLayout = getStackLayout(fanCount);
-    for (let i = 0; i < fanCount; i++) {
+    for (let i = 0; i < DECK_SIZE; i++) {
       const card = document.createElement("div");
       card.className = "deck-card stacked";
       card.dataset.idx = i;
+      card.style.zIndex = i;
 
-      // CSS 變數：牌堆位置、扇形位置
-      card.style.setProperty("--stack-x", fanStackLayout[i].x + "px");
-      card.style.setProperty("--stack-y", fanStackLayout[i].y + "px");
-      card.style.setProperty("--stack-rot", fanStackLayout[i].rot + "deg");
-      card.style.setProperty("--fan-x", fanLayout[i].x + "px");
-      card.style.setProperty("--fan-y", fanLayout[i].y + "px");
-      card.style.setProperty("--fan-rot", fanLayout[i].rot + "deg");
-
-      // 只有最上面那張可以點（觸發洗牌）
-      if (i === fanCount - 1) {
-        card.classList.add("top");
+      // 牌堆狀態：最上面幾張錯位露邊製造厚度
+      const isTop = i >= DECK_SIZE - STACK_VISIBLE;
+      if (isTop) {
+        const off = (i - (DECK_SIZE - STACK_VISIBLE));
+        card.style.setProperty("--stack-x", (off * 1.5) + "px");
+        card.style.setProperty("--stack-y", (-off * 1.5) + "px");
+      } else {
+        card.style.setProperty("--stack-x", "0px");
+        card.style.setProperty("--stack-y", "0px");
       }
+
+      // 扇形位置
+      card.style.setProperty("--fan-x", fanLayout[i].x + "px");
+
+      if (i === DECK_SIZE - 1) card.classList.add("top");
 
       const img = document.createElement("img");
       img.src = "_img/card_back.jpg";
@@ -862,271 +404,150 @@
       card.appendChild(img);
 
       card.addEventListener("click", () => onCardClick(i, card));
+
       fan.appendChild(card);
     }
+
+    // === 手指/滑鼠在牌堆上移動,即時抬起最接近的卡片 ===
+    // 用 pointermove + elementFromPoint 比 pointerenter 更可靠
+    // (滑很快時 enter/leave 會漏掉,加上扇形展開後卡片有重疊也需要 z-index 動態判斷)
+    fan.addEventListener("pointermove", (e) => {
+      if (deckPhase !== "fanned") return;
+      onPointerMove(e);
+    });
+    fan.addEventListener("pointerleave", () => {
+      fan.querySelectorAll(".deck-card.hover").forEach(c => c.classList.remove("hover"));
+    });
+
+    // touch 環境下,touchmove 時也觸發
+    fan.addEventListener("touchmove", (e) => {
+      if (deckPhase !== "fanned") return;
+      if (e.touches && e.touches[0]) {
+        onPointerMove(e.touches[0]);
+      }
+    }, { passive: true });
   }
 
-  // 階段追蹤：'stacked' / 'shuffling' / 'fanned' / 'picking'
-  let deckPhase = "stacked";
-  let pendingResult = null;
-  let isAnimating = false;
+  // 根據指標 X 位置,從所有 fanned 卡片中找出最接近的那張並抬起
+  // (用幾何距離比 elementFromPoint 更穩定,因為卡片有重疊)
+  function onPointerMove(point) {
+    const fan = document.getElementById("deckFan");
+    const cards = fan.querySelectorAll(".deck-card.fanned");
+    if (cards.length === 0) return;
 
+    let nearestCard = null;
+    let nearestDist = Infinity;
+
+    cards.forEach(c => {
+      const rect = c.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      // 主要看 X 距離(因為卡片橫向排列),但 Y 太遠也不算
+      const dx = Math.abs(point.clientX - cx);
+      const dy = Math.abs(point.clientY - cy);
+      // Y 距離超過卡片高度就忽略(指標離牌列太遠)
+      if (dy > rect.height * 0.8) return;
+      if (dx < nearestDist) {
+        nearestDist = dx;
+        nearestCard = c;
+      }
+    });
+
+    // 設定 hover 狀態
+    cards.forEach(c => {
+      if (c === nearestCard) {
+        if (!c.classList.contains("hover")) c.classList.add("hover");
+      } else {
+        if (c.classList.contains("hover")) c.classList.remove("hover");
+      }
+    });
+  }
+
+  // === 點擊卡片 ===
   function onCardClick(idx, cardEl) {
     if (isAnimating) return;
-
     if (deckPhase === "stacked") {
-      // 階段 1 → 2：點牌堆 → 洗牌
-      // 只有最上面那張可以觸發
       if (!cardEl.classList.contains("top")) return;
       startShuffle();
     } else if (deckPhase === "fanned") {
-      // 階段 3：選一張牌
       pickCard(cardEl);
     }
   }
 
+  // === 階段 2:洗牌 ===
   function startShuffle() {
     isAnimating = true;
     deckPhase = "shuffling";
+    document.getElementById("deckPrompt").textContent = "✦ 正在傾聽你的提問 ✦";
 
-    // 提示淡出（不切換文字，讓畫面專注在洗牌動作上）
-    const prompt = document.getElementById("deckPrompt");
-    prompt.classList.add("fade");
-
-    // 觸發洗牌動畫
     const cards = document.querySelectorAll(".deck-card");
-    cards.forEach((card, i) => {
-      card.classList.remove("top");
-      // 每張稍微錯開時間（牌數多，delay 要小一點）
-      card.style.animationDelay = (i * 0.015) + "s";
-      card.classList.add("shuffling");
+    cards.forEach((c, i) => {
+      c.classList.remove("top");
+      c.style.animationDelay = (i * 0.02) + "s";
+      c.classList.add("shuffling");
     });
 
-    // 洗牌動畫結束後展開（動畫 2.8s + 最後一張 delay）
     setTimeout(() => {
       cards.forEach(c => {
         c.classList.remove("shuffling");
         c.style.animationDelay = "";
       });
       fanOpen();
-    }, 2900);
+    }, 2500);
   }
 
+  // === 階段 3:水平展開 ===
   function fanOpen() {
     deckPhase = "fanned";
+    document.getElementById("deckPrompt").textContent = "✦ 滑動選擇你的卡牌 · 點擊確認抽選 ✦";
 
-    // 底層厚度牌：在扇形展開時淡出（它們只是視覺厚度感，不參與扇形）
-    const extraCards = document.querySelectorAll(".deck-card.extra-layer");
-    extraCards.forEach(c => {
-      c.style.transition = "opacity 0.5s ease";
-      c.style.opacity = "0";
-      c.style.pointerEvents = "none";
-    });
-
-    // 主要的扇形牌（非 extra-layer）一張一張展開
-    const cards = document.querySelectorAll(".deck-card:not(.extra-layer)");
+    const cards = document.querySelectorAll(".deck-card");
     cards.forEach((card, i) => {
       setTimeout(() => {
         card.classList.remove("stacked");
         card.classList.add("fanned");
-      }, i * 25);
+      }, i * 20);
     });
 
-    // 全部展開完才允許點選
     setTimeout(() => {
       isAnimating = false;
-    }, cards.length * 25 + 800);
+    }, cards.length * 20 + 500);
   }
 
+  // === 階段 4:確認抽選 ===
   function pickCard(cardEl) {
-    if (!pendingResult) return;
     isAnimating = true;
     deckPhase = "picking";
+    document.getElementById("deckPrompt").textContent = "✦ 你的訊息正在揭曉 ✦";
 
-    const fan = document.getElementById("deckFan");
-    const allCards = fan.querySelectorAll(".deck-card");
+    cardEl.classList.remove("hover");
+    cardEl.classList.add("picked");
 
-    // 其他牌淡出
-    allCards.forEach(c => {
-      if (c !== cardEl) {
-        c.classList.add("fading");
-      }
+    // 其他卡淡出
+    document.querySelectorAll(".deck-card").forEach(c => {
+      if (c !== cardEl) c.classList.add("fading");
     });
 
-    // 選中的牌「稍微抬起、輕微發亮」——看起來像被使用者拿起，不是被推到面前
-    cardEl.style.transition = "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease";
-    cardEl.style.transform = `translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 18px)) rotate(var(--fan-rot, 0deg)) scale(1.06)`;
-    cardEl.style.boxShadow = "0 20px 40px rgba(212, 168, 87, 0.4)";
-    cardEl.style.zIndex = "200";
-
-    // 短暫停留後，淡出整個牌堆區，進入結果區
     setTimeout(() => {
-      document.getElementById("deckSection").classList.remove("show");
-      revealResult(pendingResult);
-    }, 800);
+      document.getElementById("deckSection").style.display = "none";
+      const card = CARDS[Math.floor(Math.random() * CARDS.length)];
+      document.getElementById("cardImg").src = card.image_clow;
+      document.getElementById("cardName").textContent = "「" + card.name_zh + "」牌";
+      document.getElementById("result").classList.add("show");
+      setTimeout(() => document.getElementById("cardFlipper").classList.add("flipped"), 500);
+    }, 1100);
   }
 
-  // ========== 主流程 ==========
-  document.getElementById("submitBtn").addEventListener("click", startDivination);
-  document.querySelectorAll(".field input").forEach(inp => {
-    inp.addEventListener("keydown", e => {
-      if (e.key === "Enter") startDivination();
-    });
-  });
-
-  function startDivination() {
-    const y = parseInt(document.getElementById("year").value, 10);
-    const m = parseInt(document.getElementById("month").value, 10);
-    const d = parseInt(document.getElementById("day").value, 10);
-    const err = document.getElementById("errorMsg");
-
-    if (!y || !m || !d) {
-      err.textContent = "請完整輸入年、月、日";
-      return;
-    }
-    if (!isValidDate(y, m, d)) {
-      err.textContent = "這個日期不存在，請重新確認";
-      return;
-    }
-    if (CARDS.length === 0) {
-      err.textContent = "卡片資料尚未載入";
-      return;
-    }
-    err.textContent = "";
-
-    // 抽牌（雖然使用者後面要點選，但結果其實是已經決定的）
-    const cardNum = pickTodayCard(y, m, d, CARDS.length);
-    const card = CARDS.find(c => c.number === cardNum);
-    const orientation = pickOrientation(y, m, d); // 0 = upright, 1 = reversed
-
-    pendingResult = { card, orientation };
-
-    // 隱藏表單、顯示牌堆
+  // === 啟動 ===
+  document.getElementById("submitBtn").addEventListener("click", () => {
     document.getElementById("formCard").style.display = "none";
-    isAnimating = false;
-    deckPhase = "stacked";
-
-    // 重置提示文字 + 確保 prompt 不在淡出狀態（上次抽完留下的）
-    document.getElementById("deckPromptLine1").textContent = "在心中默念你的提問";
-    document.getElementById("deckPromptLine2").textContent = "點擊牌堆開始洗牌";
-    document.getElementById("deckPromptHint").textContent = "TAP THE DECK TO SHUFFLE";
-    document.getElementById("deckPrompt").classList.remove("fade");
-
-    // 重置結果區的翻牌狀態（避免上次的殘留）
-    const flipper = document.getElementById("cardFlipper");
-    flipper.classList.remove("flipped", "reversed");
-    document.getElementById("cardInfo").classList.remove("show");
-
-    buildDeck();
     document.getElementById("deckSection").classList.add("show");
-
-    // 滾動到牌堆
-    setTimeout(() => {
-      document.getElementById("deckSection").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }, 100);
-  }
-
-  function revealResult({ card, orientation }) {
-    const isReversed = orientation === 1;
-
-    // 設定圖片
-    const cardImg = document.getElementById("cardImg");
-    cardImg.alt = card.name_zh + "牌";
-    cardImg.src = card.image_clow;
-
-    // 設定方位標籤
-    const tag = document.getElementById("orientationTag");
-    if (isReversed) {
-      tag.textContent = "REVERSED · 逆位";
-      tag.className = "orientation-tag reversed";
-    } else {
-      tag.textContent = "UPRIGHT · 正位";
-      tag.className = "orientation-tag upright";
-    }
-
-    // 設定卡牌資訊
-    document.getElementById("cardNumber").textContent =
-      "NO. " + String(card.number).padStart(2, "0");
-    document.getElementById("cardNameEn").textContent = card.name_en;
-    document.getElementById("cardNameZh").textContent = "「" + card.name_zh + "」牌";
-    document.getElementById("cardSymbol").textContent = card.symbol;
-
-    // 根據正逆位顯示對應文字
-    const messageBlock = document.getElementById("messageBlock");
-    const cautionBlock = document.getElementById("cautionBlock");
-    const messageLabel = document.getElementById("messageLabel");
-    const cautionLabel = document.getElementById("cautionLabel");
-
-    if (isReversed) {
-      document.getElementById("cardMessage").textContent = card.message_reversed || card.message;
-      document.getElementById("cardCaution").textContent = card.caution_reversed || card.caution;
-      messageLabel.textContent = "逆位訊息　Reversed Message";
-      cautionLabel.textContent = "逆位提醒　Reversed Caution";
-      messageBlock.classList.add("reversed");
-      cautionBlock.classList.add("reversed");
-    } else {
-      document.getElementById("cardMessage").textContent = card.message;
-      document.getElementById("cardCaution").textContent = card.caution;
-      messageLabel.textContent = "今日訊息　Message";
-      cautionLabel.textContent = "需注意　Caution";
-      messageBlock.classList.remove("reversed");
-      cautionBlock.classList.remove("reversed");
-    }
-
-    // 重置翻牌狀態
-    const flipper = document.getElementById("cardFlipper");
-    flipper.classList.remove("flipped", "reversed");
-    document.getElementById("cardInfo").classList.remove("show");
-
-    // 顯示結果區
-    const result = document.getElementById("result");
-    result.classList.add("show");
-
-    // 滾動到結果
-    setTimeout(() => {
-      result.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 200);
-
-    // 翻牌動畫
-    setTimeout(() => {
-      flipper.classList.add("flipped");
-      if (isReversed) flipper.classList.add("reversed");
-    }, 800);
-
-    // 卡牌資訊區登場
-    setTimeout(() => {
-      document.getElementById("cardInfo").classList.add("show");
-    }, 2000);
-  }
-
-  document.getElementById("rerollBtn").addEventListener("click", () => {
-    // 重置所有狀態
-    document.getElementById("result").classList.remove("show");
-    document.getElementById("deckSection").classList.remove("show");
-    document.getElementById("formCard").style.display = "";
-    document.getElementById("year").value = "";
-    document.getElementById("month").value = "";
-    document.getElementById("day").value = "";
-    pendingResult = null;
-    isAnimating = false;
     deckPhase = "stacked";
-    // 還原 prompt 狀態
-    document.getElementById("deckPrompt").classList.remove("fade");
-    // 還原結果區翻牌狀態
-    const flipper = document.getElementById("cardFlipper");
-    flipper.classList.remove("flipped", "reversed");
-    document.getElementById("cardInfo").classList.remove("show");
-    document.getElementById("year").focus();
-    document.getElementById("formCard").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    isAnimating = false;
+    document.getElementById("deckPrompt").textContent = "點擊牌堆開始洗牌";
+    buildDeck();
   });
 
-  // 視窗大小變化時，如果牌堆在「初始堆疊」階段才重建（其他階段不重建避免中斷動畫）
   window.addEventListener("resize", () => {
     if (deckPhase === "stacked" &&
         document.getElementById("deckSection").classList.contains("show") &&
@@ -1135,6 +556,5 @@
     }
   });
 </script>
-
 </body>
 </html>
