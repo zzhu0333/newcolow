@@ -283,6 +283,15 @@
     padding: 12px;
     overflow: hidden;
   }
+  /* 手機上讓牌堆容器佔滿視窗寬度（突破 main 的左右 padding），給展開更多空間 */
+  @media (max-width: 480px) {
+    .deck-fan {
+      width: 100vw;
+      margin-left: -16px;
+      margin-right: -16px;
+      padding: 12px 4px;
+    }
+  }
 
   /* 卡片大小：再放大一級（手機 ~80px、桌機 ~140px） */
   .deck-card {
@@ -740,8 +749,8 @@
     });
 
   // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 水平展開 → 抽牌）==========
-  const DECK_SIZE = 40;         // 桌機展開的張數
-  const DECK_SIZE_MOBILE = 24;  // 手機展開 24 張（卡片放大後讓間距真正寬鬆）
+  const DECK_SIZE = 28;         // 桌機展開的張數
+  const DECK_SIZE_MOBILE = 30;  // 手機展開 30 張
   const STACK_EXTRA = 6;        // 牌堆底下覆蓋的張數（增加厚度感）
   const STACK_VISIBLE = 6;      // 堆疊狀態時露出邊緣的張數
 
@@ -756,14 +765,16 @@
     // 卡片實際寬度：跟著 CSS clamp(80px, 18vw, 140px) 同步計算
     const cardWidth = Math.max(80, Math.min(140, window.innerWidth * 0.18));
 
-    // 卡片之間希望的最小間距（讓展開時不要太密集）
-    const desiredGap = isMobile() ? 12 : 14;
+    // 卡片之間希望的間距（讓展開時接近圖二的鬆度）
+    // 手機：露出比例 ~30%；桌機：露出比例 ~30%
+    const desiredGap = isMobile() ? 18 : 28;
 
     // 期望總展開寬度 = (count - 1) 個間距 + 卡片本身寬度
     const desiredTotalWidth = (count - 1) * desiredGap + cardWidth;
 
     // 容器最大可用寬度（扣掉兩側 buffer，避免邊緣卡片被裁掉）
-    const sideBuffer = isMobile() ? 4 : 12;
+    // 手機上 buffer 縮到最小，盡量用滿視窗寬度
+    const sideBuffer = isMobile() ? 2 : 12;
     const maxTotalWidth = containerWidth - sideBuffer * 2;
 
     // 取兩者較小：以「想要的寬鬆間距」為目標，但不能超出容器
