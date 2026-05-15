@@ -335,19 +335,32 @@
   }
 
   /* 階段 3：水平展開 */
-  .deck-card.fanned {
+  /*.deck-card.fanned {
     transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
     cursor: pointer;
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
                 box-shadow 0.3s ease,
                 opacity 0.5s ease;
-  }
+  }*/
   /* hover 狀態：用 .hover class 控制(滑動經過時即時抬起)*/
-  .deck-card.fanned.hover {
+  /*.deck-card.fanned.hover {
     transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 28px)) rotate(var(--fan-rot, 0deg)) scale(1.12);
     box-shadow: 0 22px 45px rgba(212, 168, 87, 0.5);
     z-index: 200;
-  }
+  }*/
+   
+        /* 確保 CSS 有讀取 JS 寫入的 --fan-x */
+        .deck-card.fanned {
+            position: absolute; /* 必須是絕對定位 */
+            transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* 處理互動抬起的效果 */
+        .deck-card.fanned.hover {
+            transform: translateX(var(--fan-x, 0px)) translateY(-30px) scale(1.12);
+            z-index: 100; /* 確保抬起的卡片在最上層 */
+        }
   /* 桌機版額外用 :hover 增強體驗(手機不會觸發) */
   @media (hover: hover) {
     .deck-card.fanned:hover {
