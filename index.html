@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>庫洛卡牌・今日運勢</title>
+<title>庫洛卡牌占卜</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+TC:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
@@ -304,7 +304,7 @@
     .deck-card {
         position: absolute;
         /* 稍微加寬一點，讓 52 張牌重疊時更有層次感 */
-        width: clamp(65px, 18vw, 120px);
+        width: clamp(80px, 25vw, 150px);
         aspect-ratio: 180 / 360; /* 修正為 1:2 比例 */
 
         border-radius: 4px;
@@ -803,26 +803,22 @@
   //  return layout;
     //}
 
-  
     function getFanLayout(count) {
         const containerWidth = window.innerWidth;
-        // 同步 CSS clamp 的最大/最小值計算，確保 JS 算的寬度跟畫面上看到的一致
-        const cardWidth = Math.max(65, Math.min(120, window.innerWidth * 0.18));
 
-        // 左右各預留 8px 的微小緩衝，避免卡片死貼螢幕邊框
-        const padding = 8;
+        // 關鍵：這裡的計算必須跟 CSS 的 clamp(80px, 25vw, 150px) 完全一致
+        const cardWidth = Math.max(80, Math.min(150, window.innerWidth * 0.25));
 
-        // 關鍵計算：(螢幕寬 - 卡片寬 - 左右邊距) / 2
-        // 這樣算出 maxX 後，最後一張牌位移 maxX，其右邊緣剛好距離螢幕邊緣 padding px
+        const padding = 10; // 稍微增加一點邊距感
+
+        // 重新計算最大位移量
         const maxX = (containerWidth - cardWidth - (padding * 2)) / 2;
 
         const layout = [];
         const center = (count - 1) / 2;
         for (let i = 0; i < count; i++) {
-            const t = (i - center) / center; // 算出每張牌的相對權重 (-1 ~ 1)
+            const t = (i - center) / center;
             const x = t * maxX;
-
-            // 強制 y 為 0，rot 為 0，達成絕對水平排列
             layout.push({ x: x, y: 0, rot: 0 });
         }
         return layout;
