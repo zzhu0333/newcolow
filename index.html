@@ -341,8 +341,8 @@
                 opacity 0.5s ease;
   }
   .deck-card.fanned:hover {
-    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 20px)) rotate(var(--fan-rot, 0deg)) scale(1.06);
-    box-shadow: 0 25px 60px rgba(212, 168, 87, 0.45);
+    transform: translateX(var(--fan-x, 0px)) translateY(calc(var(--fan-y, 0px) - 10px)) rotate(var(--fan-rot, 0deg)) scale(1.03);
+    box-shadow: 0 15px 35px rgba(212, 168, 87, 0.3);
     z-index: 100;
   }
 
@@ -571,7 +571,7 @@
   <header class="header">
     <div class="crest">✦ Daily Clow Reading ✦</div>
     <h1>庫洛卡牌・今日運勢</h1>
-    <div class="sub">輸入你的生辰　迎接今日的庫洛訊息</div>
+    <div class="sub">迎接今日的庫洛訊息</div>
     <div class="today-date" id="todayDate"></div>
     <div class="divider"></div>
   </header>
@@ -582,15 +582,15 @@
     <p class="hint">每個生辰　對應宇宙獨一無二的訊息</p>
     <div class="date-inputs">
       <div class="field">
-        <label>YEAR 年</label>
+        <label>YEAR</label>
         <input type="number" id="year" placeholder="1999" min="1900" max="2100" inputmode="numeric" />
       </div>
       <div class="field">
-        <label>MONTH 月</label>
+        <label>MONTH</label>
         <input type="number" id="month" placeholder="04" min="1" max="12" inputmode="numeric" />
       </div>
       <div class="field">
-        <label>DAY 日</label>
+        <label>DAY</label>
         <input type="number" id="day" placeholder="01" min="1" max="31" inputmode="numeric" />
       </div>
     </div>
@@ -732,9 +732,9 @@
     });
 
   // ========== 牌堆畫面（三階段：牌堆 → 洗牌 → 扇形展開 → 抽牌）==========
-  const DECK_SIZE = 25;         // 桌機展開的扇形張數（多張覆蓋形成豐富視覺）
-  const DECK_SIZE_MOBILE = 19;  // 手機展開的扇形張數
-  const STACK_EXTRA = 8;        // 牌堆底下覆蓋的張數（增加厚度感）
+  const DECK_SIZE = 30;         // 桌機展開的扇形張數（密集排列，沒有單張會突出）
+  const DECK_SIZE_MOBILE = 22;  // 手機展開的扇形張數
+  const STACK_EXTRA = 6;        // 牌堆底下覆蓋的張數（增加厚度感）
   const STACK_VISIBLE = 6;      // 堆疊狀態時露出邊緣的張數
 
   function isMobile() {
@@ -889,10 +889,17 @@
   function fanOpen() {
     deckPhase = "fanned";
 
-    // 切換成扇形展開
-    const cards = document.querySelectorAll(".deck-card");
+    // 底層厚度牌：在扇形展開時淡出（它們只是視覺厚度感，不參與扇形）
+    const extraCards = document.querySelectorAll(".deck-card.extra-layer");
+    extraCards.forEach(c => {
+      c.style.transition = "opacity 0.5s ease";
+      c.style.opacity = "0";
+      c.style.pointerEvents = "none";
+    });
+
+    // 主要的扇形牌（非 extra-layer）一張一張展開
+    const cards = document.querySelectorAll(".deck-card:not(.extra-layer)");
     cards.forEach((card, i) => {
-      // 每張稍微延遲，連續展開（牌數多 delay 要小）
       setTimeout(() => {
         card.classList.remove("stacked");
         card.classList.add("fanned");
