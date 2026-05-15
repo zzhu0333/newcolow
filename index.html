@@ -303,18 +303,24 @@
   }*/
     .deck-card {
         position: absolute;
-        /* 寬度與 JS 同步 */
+        /* 稍微加寬一點，讓 52 張牌重疊時更有層次感 */
         width: clamp(65px, 18vw, 120px);
-        /* 比例微調為 1:2，讓卡片看起來更厚實一點 */
-        aspect-ratio: 180 / 360;
-        /* 重要：設定為 center center，確保水平位移時是以中心點對齊 */
+        aspect-ratio: 180 / 360; /* 修正為 1:2 比例 */
+
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        background: #2a1438;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+        /* 關鍵修正：改為中心點對齊，防止旋轉傾斜 */
         transform-origin: center center;
-        /* ...其餘保持不變 ... */
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.5s ease;
+        will-change: transform;
     }
 
-        /* 展開狀態的 transition 保持平滑 */
+        /* 確保展開狀態下沒有殘留的旋轉變數 */
         .deck-card.fanned {
-            transform: translateX(var(--fan-x, 0px)) translateY(0px) rotate(0deg);
+            transform: translateX(var(--fan-x, 0px)) translateY(0px) rotate(0deg) !important;
         }
   .deck-card img {
     width: 100%;
@@ -364,12 +370,6 @@
     z-index: 200;
   }*/
    
-        /* 確保 CSS 有讀取 JS 寫入的 --fan-x */
-        .deck-card.fanned {
-            position: absolute; /* 必須是絕對定位 */
-            transform: translateX(var(--fan-x, 0px)) translateY(var(--fan-y, 0px)) rotate(var(--fan-rot, 0deg));
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
 
         /* 處理互動抬起的效果 */
         .deck-card.fanned.hover {
@@ -805,24 +805,25 @@
 
   
     function getFanLayout(count) {
-        const fan = document.getElementById("deckFan");
-        // 強制使用 window.innerWidth 確保抓到完整視窗寬度
         const containerWidth = window.innerWidth;
-        const cardWidth = Math.max(65, Math.min(120, window.innerWidth * 0.18)); // 調大手機端比例 (14vw -> 18vw)
+        // 同步 CSS clamp 的最大/最小值計算，確保 JS 算的寬度跟畫面上看到的一致
+        const cardWidth = Math.max(65, Math.min(120, window.innerWidth * 0.18));
 
-        // 增加 maxX，讓左右兩側的牌可以更貼近螢幕邊緣
-        const sideBuffer = 0; // 減少邊距
-        const availableWidth = containerWidth - (isMobile() ? 20 : cardWidth);
-        const maxX = availableWidth / 2;
+        // 左右各預留 8px 的微小緩衝，避免卡片死貼螢幕邊框
+        const padding = 8;
+
+        // 關鍵計算：(螢幕寬 - 卡片寬 - 左右邊距) / 2
+        // 這樣算出 maxX 後，最後一張牌位移 maxX，其右邊緣剛好距離螢幕邊緣 padding px
+        const maxX = (containerWidth - cardWidth - (padding * 2)) / 2;
 
         const layout = [];
         const center = (count - 1) / 2;
         for (let i = 0; i < count; i++) {
-            const t = (i - center) / center;
+            const t = (i - center) / center; // 算出每張牌的相對權重 (-1 ~ 1)
             const x = t * maxX;
-            // 加上一點點旋轉角度 (rot) 會讓視覺上看起來更寬闊，不那麼死板
-            //const rot = t * 10;
-            layout.push({ x: x, y: 0, rot: rot });
+
+            // 強制 y 為 0，rot 為 0，達成絕對水平排列
+            layout.push({ x: x, y: 0, rot: 0 });
         }
         return layout;
     }
