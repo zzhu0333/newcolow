@@ -288,7 +288,7 @@
   /* 卡片大小:手機 55px(保留 52 張完整庫洛全套,接受較密集的展開)、桌機 120px */
   .deck-card {
     position: absolute;
-    width: clamp(55px, 14vw, 120px);
+    width: clamp(65px, 22vw, 120px);
     aspect-ratio: 172 / 384;
     border-radius: 4px;
     overflow: hidden;
@@ -765,28 +765,52 @@
   }
 
   // 計算水平展開時的座標（每張卡 X 均勻分布、Y 全部同高、不旋轉）
-  function getFanLayout(count) {
-    const fan = document.getElementById("deckFan");
-    const containerWidth = fan ? fan.clientWidth : window.innerWidth;
-    // 卡片實際寬度：跟著 CSS clamp(55px, 14vw, 120px) 同步計算
-    const cardWidth = Math.max(55, Math.min(120, window.innerWidth * 0.14));
+  //function getFanLayout(count) {
+  //  const fan = document.getElementById("deckFan");
+  //  const containerWidth = fan ? fan.clientWidth : window.innerWidth;
+  //  // 卡片實際寬度：跟著 CSS clamp(55px, 14vw, 120px) 同步計算
+  //  const cardWidth = Math.max(55, Math.min(120, window.innerWidth * 0.14));
 
-    // 水平展開可用寬度：容器寬度 - 卡片自身 - 兩側 buffer
-    // (deck-fan 已經是 100vw,buffer 縮到最小)
-    const sideBuffer = isMobile() ? 4 : 16;
-    const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
-    const maxX = Math.max(40, availableWidth / 2);
+  //  // 水平展開可用寬度：容器寬度 - 卡片自身 - 兩側 buffer
+  //  // (deck-fan 已經是 100vw,buffer 縮到最小)
+  //  const sideBuffer = isMobile() ? 4 : 16;
+  //  const availableWidth = containerWidth - cardWidth - sideBuffer * 2;
+  //  const maxX = Math.max(40, availableWidth / 2);
 
-    const layout = [];
-    const center = (count - 1) / 2;
-    for (let i = 0; i < count; i++) {
-      const t = (i - center) / center; // -1 ~ 1
-      const x = t * maxX;
-      // 全部水平排列：Y = 0, rotate = 0
-      layout.push({ x: x, y: 0, rot: 0 });
+  //  const layout = [];
+  //  const center = (count - 1) / 2;
+  //  for (let i = 0; i < count; i++) {
+  //    const t = (i - center) / center; // -1 ~ 1
+  //    const x = t * maxX;
+  //    // 全部水平排列：Y = 0, rotate = 0
+  //    layout.push({ x: x, y: 0, rot: 0 });
+  //  }
+  //  return layout;
+    //}
+
+    function getFanLayout(count) {
+        const fan = document.getElementById("deckFan");
+        // 強制使用 window.innerWidth 確保抓到完整視窗寬度
+        const containerWidth = window.innerWidth;
+        const cardWidth = Math.max(65, Math.min(120, window.innerWidth * 0.18)); // 調大手機端比例 (14vw -> 18vw)
+
+        // 增加 maxX，讓左右兩側的牌可以更貼近螢幕邊緣
+        const sideBuffer = 0; // 減少邊距
+        const availableWidth = containerWidth - (isMobile() ? 20 : cardWidth);
+        const maxX = availableWidth / 2;
+
+        const layout = [];
+        const center = (count - 1) / 2;
+        for (let i = 0; i < count; i++) {
+            const t = (i - center) / center;
+            const x = t * maxX;
+            // 加上一點點旋轉角度 (rot) 會讓視覺上看起來更寬闊，不那麼死板
+            const rot = t * 10;
+            layout.push({ x: x, y: 0, rot: rot });
+        }
+        return layout;
     }
-    return layout;
-  }
+
 
   // 牌堆模式：所有牌疊在中央，最上面幾張錯位露出邊緣製造厚度
   function getStackLayout(count) {
