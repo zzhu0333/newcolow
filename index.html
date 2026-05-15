@@ -409,7 +409,7 @@
     width: clamp(180px, 50vw, 220px);
     aspect-ratio: 172 / 384;
     transform-style: preserve-3d;
-    transition: transform 1.4s cubic-bezier(0.5, -0.3, 0.3, 1.3);
+    transition: transform 2s cubic-bezier(0.45, 0.05, 0.25, 1);
   }
   /* 正位翻牌：180° */
   .card-flipper.flipped { transform: rotateY(180deg); }
@@ -992,11 +992,19 @@
     cardEl.style.boxShadow = "0 30px 60px rgba(244, 184, 200, 0.55), 0 0 40px rgba(212, 168, 87, 0.45)";
     cardEl.style.zIndex = "300";
 
-    // 等卡片移到中央後,淡出牌堆區進入結果區
+    // 等卡片移到中央、停留一拍後,淡出牌堆區進入結果區
+    // (1.1s 動畫 + 0.3s 停留讓使用者「看清楚自己選的這張」)
     setTimeout(() => {
+      // 清理所有 inline style 避免殘留干擾(雖然 deckSection 會被隱藏,但保險起見)
+      allCards.forEach(c => {
+        c.style.transition = "";
+        c.style.transform = "";
+        c.style.boxShadow = "";
+        c.style.zIndex = "";
+      });
       document.getElementById("deckSection").classList.remove("show");
       revealResult(pendingResult);
-    }, 1100);
+    }, 1400);
   }
 
   // ========== 主流程 ==========
@@ -1118,10 +1126,12 @@
     const result = document.getElementById("result");
     result.classList.add("show");
 
-    // 滾動到結果
-    setTimeout(() => {
-      result.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 200);
+    // 滾動到結果區頂端(等 layout 完成 + result 開始 fade-in 後再滾)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        result.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
 
     // 翻牌動畫
     setTimeout(() => {
@@ -1129,10 +1139,10 @@
       if (isReversed) flipper.classList.add("reversed");
     }, 800);
 
-    // 卡牌資訊區登場
+    // 卡牌資訊區登場（翻牌完成那一刻）
     setTimeout(() => {
       document.getElementById("cardInfo").classList.add("show");
-    }, 2000);
+    }, 2800);
   }
 
   document.getElementById("rerollBtn").addEventListener("click", () => {
