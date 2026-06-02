@@ -901,30 +901,55 @@
     }
 
     // === 手指/滑鼠在牌堆上移動,即時抬起 X 軸最接近的卡片 ===
-    // 用 pointermove + 幾何距離,比 pointerenter/leave 更可靠(卡片重疊嚴重時 enter/leave 會漏觸發)
     fan.addEventListener("pointermove", (e) => {
       if (deckPhase !== "fanned") return;
+      if (e.pointerType === "touch") return;
       highlightNearestCard(e.clientX, e.clientY);
     });
-    fan.addEventListener("pointerleave", () => {
+    // 桌機滑鼠離開才清除 hover；手機不清（保留讓使用者點選）
+    fan.addEventListener("pointerleave", (e) => {
+      if (e.pointerType === "touch") return;
       fan.querySelectorAll(".deck-card.hover").forEach(c => c.classList.remove("hover"));
     });
-    // touch 設備:touchmove 也觸發(手指滑過時)
+
+    // touch:手指滑動時抬起最近的卡
     fan.addEventListener("touchmove", (e) => {
       if (deckPhase !== "fanned") return;
       if (e.touches && e.touches[0]) {
         highlightNearestCard(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, { passive: true });
-    // touch 設備:手指放開時，點選目前 hover 的那張牌
+
+    // touch:記錄起始位置，判斷是滑動還是點擊
+    let touchStartX = null;
+    let touchStartY = null;
+    fan.addEventListener("touchstart", (e) => {
+      if (e.touches && e.touches[0]) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    // touch:手指放開
+    // - 位移小（tap）→ 點選目前 hover 的牌
+    // - 位移大（滑動）→ 保留 hover，不觸發選牌，讓使用者再點
     fan.addEventListener("touchend", (e) => {
       if (deckPhase !== "fanned" || isAnimating) return;
-      const hovered = fan.querySelector(".deck-card.hover");
-      if (hovered) {
-        e.preventDefault();
-        const idx = parseInt(hovered.dataset.idx, 10);
-        onCardClick(idx, hovered);
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) return;
+      const dx = Math.abs(touch.clientX - (touchStartX || touch.clientX));
+      const dy = Math.abs(touch.clientY - (touchStartY || touch.clientY));
+      const isTap = dx < 10 && dy < 10;
+      if (isTap) {
+        highlightNearestCard(touch.clientX, touch.clientY);
+        const hovered = fan.querySelector(".deck-card.hover");
+        if (hovered) {
+          e.preventDefault();
+          const idx = parseInt(hovered.dataset.idx, 10);
+          onCardClick(idx, hovered);
+        }
       }
+      // 非 tap → hover 保留，等使用者主動點
     }, { passive: false });
   }
 
