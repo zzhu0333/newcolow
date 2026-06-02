@@ -740,12 +740,14 @@
     return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
   }
   function pickTodayCard(y, m, d, totalCards) {
-    const timeKey = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    const t = new Date();
+    const timeKey = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds();
     const seed = getBirthKey(y, m, d) + "::" + todayKey + "::" + timeKey;
     return (hashString(seed) % totalCards) + 1;
   }
   function pickOrientation(y, m, d) {
-    const timeKey = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    const t = new Date();
+    const timeKey = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds();
     const seed = getBirthKey(y, m, d) + "::" + todayKey + "::" + timeKey + "::orientation";
     return hashString(seed) % 2; // 0 = upright, 1 = reversed
   }
@@ -914,6 +916,16 @@
         highlightNearestCard(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, { passive: true });
+    // touch 設備:手指放開時，點選目前 hover 的那張牌
+    fan.addEventListener("touchend", (e) => {
+      if (deckPhase !== "fanned" || isAnimating) return;
+      const hovered = fan.querySelector(".deck-card.hover");
+      if (hovered) {
+        e.preventDefault();
+        const idx = parseInt(hovered.dataset.idx, 10);
+        onCardClick(idx, hovered);
+      }
+    }, { passive: false });
   }
 
   // 找出指標下方 X 軸最接近的卡,加上 .hover class 讓它抬起
