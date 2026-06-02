@@ -608,9 +608,9 @@
 
 <main>
   <header class="header">
-    <div class="crest">✦ Daily Clow Reading ✦</div>
-    <h1>庫洛卡牌・今日運勢</h1>
-    <div class="sub">迎接今日的庫洛訊息</div>
+    <div class="crest">✦ Clow Card Reading ✦</div>
+    <h1>庫洛卡牌占卜</h1>
+
     <div class="today-date" id="todayDate"></div>
     <div class="divider"></div>
   </header>
@@ -621,18 +621,18 @@
     <div class="date-inputs">
       <div class="field">
         <label>YEAR</label>
-        <input type="number" id="year" placeholder="1999" min="1900" max="2100" inputmode="numeric" />
+        <input type="number" id="year" placeholder="" min="1900" max="2100" inputmode="numeric" />
       </div>
       <div class="field">
         <label>MONTH</label>
-        <input type="number" id="month" placeholder="04" min="1" max="12" inputmode="numeric" />
+        <input type="number" id="month" placeholder="" min="1" max="12" inputmode="numeric" />
       </div>
       <div class="field">
         <label>DAY</label>
-        <input type="number" id="day" placeholder="01" min="1" max="31" inputmode="numeric" />
+        <input type="number" id="day" placeholder="" min="1" max="31" inputmode="numeric" />
       </div>
     </div>
-    <button class="submit-btn" id="submitBtn">召 喚 今 日 之 牌</button>
+    <button class="submit-btn" id="submitBtn">召 喚 命 運 之 牌</button>
     <div class="error" id="errorMsg"></div>
   </section>
 
@@ -651,7 +651,7 @@
   <!-- 結果區 -->
   <section class="result" id="result">
     <div class="reveal-banner">
-      <div class="reveal-line">✦　今 日 宇 宙 為 你 揭 示　✦</div>
+      <div class="reveal-line">✦　宇 宙 為 你 揭 示　✦</div>
     </div>
 
     <!-- 卡片 -->
@@ -682,7 +682,7 @@
       </div>
 
       <div class="field-block" id="messageBlock">
-        <div class="label" id="messageLabel">今日訊息　Message</div>
+        <div class="label" id="messageLabel">牌義訊息　Message</div>
         <div class="content" id="cardMessage"></div>
       </div>
 
@@ -698,7 +698,7 @@
   </section>
 
   <footer>
-    Clow Cards © CLAMP　・　每日 0:00 更新
+    Clow Cards © CLAMP
   </footer>
 </main>
 
@@ -740,11 +740,13 @@
     return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
   }
   function pickTodayCard(y, m, d, totalCards) {
-    const seed = getBirthKey(y, m, d) + "::" + todayKey;
+    const timeKey = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::" + timeKey;
     return (hashString(seed) % totalCards) + 1;
   }
   function pickOrientation(y, m, d) {
-    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::orientation";
+    const timeKey = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    const seed = getBirthKey(y, m, d) + "::" + todayKey + "::" + timeKey + "::orientation";
     return hashString(seed) % 2; // 0 = upright, 1 = reversed
   }
 
@@ -1161,7 +1163,7 @@
     } else {
       document.getElementById("cardMessage").textContent = card.message;
       document.getElementById("cardCaution").textContent = card.caution;
-      messageLabel.textContent = "今日訊息　Message";
+      messageLabel.textContent = "牌義訊息　Message";
       cautionLabel.textContent = "需注意　Caution";
       messageBlock.classList.remove("reversed");
       cautionBlock.classList.remove("reversed");
